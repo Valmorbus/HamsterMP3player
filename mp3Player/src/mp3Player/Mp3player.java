@@ -11,30 +11,25 @@ public class Mp3player extends MediaLib {
 	private MediaPlayer mediaPlayer = null; 
 	private boolean playing = false;
 
-	public void playing(String text) {
-		File file = new File("C:/Users/borgs_000/workspace/OOPJ15/text/Rick Astley3.mp3");
+	public void playing(String text, File file) {
+		
 		Media media = null;
 		try {
-
 			URL res = file.toURI().toURL();
 			media = new Media(res.toString());
-			System.out.println("playing " + res.toString());
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
 		}
 		if (mediaPlayer == null)
 			mediaPlayer = new MediaPlayer(media);
-		if (text.equals("Play")) 
-			{
+		if (text.equals("Play")) {
 			mediaPlayer.pause();
 			playing = false;
 			}
-			
 		else{
 			mediaPlayer.play();
 			playing = true;
-		}
-				
+		}			
 	}
 	public void stop()
 	{

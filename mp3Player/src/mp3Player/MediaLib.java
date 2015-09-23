@@ -15,18 +15,18 @@ import java.util.Set;
 
 public class MediaLib {
 	private HashMap<String, String> adressName = new HashMap<String, String>();
-	private File file = new File("C:/Users/borgs_000/workspace/mp3Player/Lib/mediaLib.txt");
+	private File file = new File("C:/Users/borgs_000/git/mp3Player/mp3Player/lib/mediaLib.txt");
 	private ArrayList<String> adress = new ArrayList<String>();
 	private ArrayList<String> name = new ArrayList<String>();
 	private String temp = null;
 
 	protected String fetch(String name) {
 		try (BufferedReader fin = new BufferedReader(new FileReader(file))) {
-			while ((temp = fin.readLine() + fin.readLine()) != null)
-				;
-			if (temp.contains(name))
-				return temp;
-
+			while ((temp = fin.readLine()) != null){
+					String adress =  fin.readLine();
+				if (adress.contains(name))
+					return temp+adress;
+			}
 		} catch (FileNotFoundException e) {
 			try (BufferedWriter bw = new BufferedWriter(new FileWriter(file))) {
 				bw.write("nothing in list");
@@ -38,16 +38,17 @@ public class MediaLib {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
 		return "File not Found";
-
 	}
 
 	protected ArrayList<String> readLib() {
 		ArrayList<String> allSongs = new ArrayList<String>();
+		String text = "";
+		int i =0;
 		try (BufferedReader fin = new BufferedReader(new FileReader(file))) {
-			while (fin.readLine() != null) {
-				allSongs.add(fin.readLine());
+			while ((text =fin.readLine()) != null) {
+				if(i++%2!=0)
+				allSongs.add(text);
 			}
 		} catch (FileNotFoundException e) {
 			try (BufferedWriter bw = new BufferedWriter(new FileWriter(file))) {
@@ -77,16 +78,13 @@ public class MediaLib {
 				for (String n : name)
 					fout.write(s + '\n' + n + ".mp3");
 			}
-
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
 	}
 
 	public void addToLib(String path, String name) {
 		adressName.put(path, name);
 	}
-
 }

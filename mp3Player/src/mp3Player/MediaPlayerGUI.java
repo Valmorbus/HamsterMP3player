@@ -13,71 +13,103 @@ import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuBar;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 public class MediaPlayerGUI extends Application {
-	private boolean onOff = false;
 
 	public static void main(String[] args) {
 		launch(args);
-
 	}
+
 	@Override
 	public void start(Stage primaryStage) {
-		
-		Mp3player mp = new Mp3player();
-		//ArrayList<String> test = new ArrayList<String>();
-		//test = mp.readLib();
 
+		Mp3player mp = new Mp3player();
+		File songfile = new File("C:/Users/borgs_000/git/mp3Player/mp3Player/lib/The Hampsterdance Song.mp3");
 		Group root = new Group();
 		Scene scene = new Scene(root);
 		HBox hbox = new HBox();
-		File file2 = new File("C:/Users/borgs_000/workspace/OOPJ15/text/Dancinghamster.gif");
+		File file = new File("C:/Users/borgs_000/git/mp3Player/mp3Player/lib/Dancinghamster.gif");
+		File file2 = new File("C:/Users/borgs_000/git/mp3Player/mp3Player/lib/hamster.gif");
 		Image image = new Image(file2.toURI().toString());
+		Image image2 = new Image(file.toURI().toString());
 		ImageView iv = new ImageView();
-		iv.setImage(image);
 		Button playButton = new Button("Play");
-			playButton.setOnAction(new EventHandler<ActionEvent>() {
-			    @Override public void handle(ActionEvent e) {
-			    	String text = (playButton.getText().equals("Play"))?"Pause":"Play";
-			        playButton.setText(text);
-			        	mp.playing(text);
-			    }
-			});
+		
+		playButton.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent e) {
+				String text = (playButton.getText().equals("Play")) ? "Pause" : "Play";
+				playButton.setText(text);
+				mp.playing(text, songfile);
+				if (text.equals("Play"))
+					iv.setImage(image);
+				else
+					iv.setImage(image2);
+			}
+		});
 		Button stopButton = new Button("Stop");
 		stopButton.setOnAction(new EventHandler<ActionEvent>() {
-		    @Override public void handle(ActionEvent e) {
-		        	mp.stop();
-		        	String text = "Play";
-			        playButton.setText(text);
-		    }
+			@Override
+			public void handle(ActionEvent e) {
+				mp.stop();
+				String text = "Play";
+				playButton.setText(text);
+				iv.setImage(image);
+			}
 		});
-		ListView<String> list = new ListView<String>();
-		ObservableList<String> items = FXCollections.observableArrayList(mp.readLib());
+		ListView<String> list = playList();
+		MenuBar menuBar = menu();
 
-		items.addListener(new ListChangeListener<String>() {
-            @Override
-            public void onChanged(ListChangeListener.Change change) {
-                System.out.println("Detected a change! ");
-            }
-        }); 
-		list.setItems(items);
-		hbox.getChildren().addAll(iv, playButton, stopButton);
+		hbox.getChildren().addAll(menuBar, iv, playButton, stopButton);
 		hbox.getChildren().add(list);
 		root.getChildren().add(hbox);
-		
+
 		primaryStage.setTitle("mp3 player");
 		primaryStage.setWidth(550);
 		primaryStage.setHeight(400);
 		primaryStage.setScene(scene);
 		primaryStage.show();
-		
-		//mp.playing();
-		
 
 	}
+	/**
+	 * Menu for ...
+	 * @return
+	 */
+	private MenuBar menu() 
+	{
+		MenuBar menuBar = new MenuBar();
+		Menu menuFile = new Menu("File");
+		Menu menuEdit = new Menu("Edit");
+		Menu menuView = new Menu("View");
+		menuBar.getMenus().addAll(menuFile, menuEdit, menuView);
+		return menuBar;
+	}
+	private ListView<String> playList()
+	{
+		MediaLib ml = new MediaLib();
+		Mp3player mp = new Mp3player();
+		ListView<String> list = new ListView<String>();
+		ObservableList<String> items = FXCollections.observableArrayList(mp.readLib());
+
+		items.addListener(new ListChangeListener<String>() {
+			@Override
+			public void onChanged(ListChangeListener.Change change) {
+				File f = new File(ml.fetch(change.toString()));
+				mp.playing("Play", f);
+				System.out.println("här");
+			}
+		});
+		list.setItems(items);
+		
+		return list;
+	}
+
 
 }
