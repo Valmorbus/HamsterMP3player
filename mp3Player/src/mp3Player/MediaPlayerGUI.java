@@ -42,13 +42,19 @@ public class MediaPlayerGUI extends Application {
 		Button playButton = new Button("Play");
 			playButton.setOnAction(new EventHandler<ActionEvent>() {
 			    @Override public void handle(ActionEvent e) {
-			        playButton.setText("Pause");
-			        onOff = (onOff == true) ? false:true;
-			        	mp.playing(onOff);
-					
+			    	String text = (playButton.getText().equals("Play"))?"Pause":"Play";
+			        playButton.setText(text);
+			        	mp.playing(text);
 			    }
 			});
 		Button stopButton = new Button("Stop");
+		stopButton.setOnAction(new EventHandler<ActionEvent>() {
+		    @Override public void handle(ActionEvent e) {
+		        	mp.stop();
+		        	String text = "Play";
+			        playButton.setText(text);
+		    }
+		});
 		ListView<String> list = new ListView<String>();
 		ObservableList<String> items = FXCollections.observableArrayList(mp.readLib());
 

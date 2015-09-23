@@ -8,8 +8,10 @@ import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 
 public class Mp3player extends MediaLib {
+	private MediaPlayer mediaPlayer = null; 
+	private boolean playing = false;
 
-	public void playing(boolean playing) {
+	public void playing(String text) {
 		File file = new File("C:/Users/borgs_000/workspace/OOPJ15/text/Rick Astley3.mp3");
 		Media media = null;
 		try {
@@ -20,12 +22,24 @@ public class Mp3player extends MediaLib {
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
 		}
-
-		MediaPlayer mediaPlayer = new MediaPlayer(media);
-		if (!playing)
-			mediaPlayer.play();
-		else if (playing)
+		if (mediaPlayer == null)
+			mediaPlayer = new MediaPlayer(media);
+		if (text.equals("Play")) 
+			{
 			mediaPlayer.pause();
+			playing = false;
+			}
+			
+		else{
+			mediaPlayer.play();
+			playing = true;
+		}
+				
+	}
+	public void stop()
+	{
+		if (mediaPlayer != null)
+			mediaPlayer.stop();
 	}
 
 

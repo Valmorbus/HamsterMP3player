@@ -13,7 +13,7 @@ import java.util.Iterator;
 import java.util.Map.Entry;
 import java.util.Set;
 
-public abstract class MediaLib {
+public class MediaLib {
 	private HashMap<String, String> adressName = new HashMap<String, String>();
 	private File file = new File("C:/Users/borgs_000/workspace/mp3Player/Lib/mediaLib.txt");
 	private ArrayList<String> adress = new ArrayList<String>();
