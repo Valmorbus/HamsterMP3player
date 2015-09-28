@@ -28,17 +28,17 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 public class MediaPlayerGUI extends Application {
-	private String defaultSong = "C:/Users/borgs_000/git/mp3Player/mp3Player/lib/The Hampsterdance Song.mp3";
+	private String defaultSong = "C:/Users/Simons/git/HamsterMP3player/mp3Player/Lib/The Hampsterdance Song.mp3";
 	private File songfile = new File(defaultSong);
 	private Mp3player mp = new Mp3player();
-	private MediaLib ml = new MediaLib();
-	private File file = new File("C:/Users/borgs_000/git/mp3Player/mp3Player/lib/Dancinghamster.gif");
-	private File file2 = new File("C:/Users/borgs_000/git/mp3Player/mp3Player/lib/hamster.gif");
+	//private MediaLib ml = new MediaLib();
+	private File file = new File("C:/Users/Simons/git/HamsterMP3player/mp3Player/Lib/Dancinghamster.gif");
+	private File file2 = new File("C:/Users/Simons/git/HamsterMP3player/mp3Player/Lib/hamster.gif");
 	private Image image = new Image(file2.toURI().toString());
 	private Image image2 = new Image(file.toURI().toString());
 	private ListView<String> list = new ListView<String>();
 	private ArrayList<String> listOfSongs = new ArrayList<String>();
-	private File save = new File("C:/Users/borgs_000/git/mp3Player/mp3Player/lib/mediaLib.txt");
+	private File save = new File("C:/Users/Simons/git/HamsterMP3player/mp3Player/Lib/mediaLib.txt");
 	
 
 	public static void main(String[] args) {
@@ -125,7 +125,7 @@ public class MediaPlayerGUI extends Application {
 	    openItem.setAccelerator(new KeyCodeCombination(KeyCode.O,KeyCombination.CONTROL_DOWN));
 	    openItem.setOnAction(new EventHandler<ActionEvent>(){
 	    	public void handle(ActionEvent event){
-	    		System.out.println("h‰r");
+	    		System.out.println("h√§r");
 	    		FileChooser fileChooser = new FileChooser();
 	    		//fileChooser.getExtensionFilters().add( new FileChooser.ExtensionFilter("mp3"));
 	    		fileChooser.setTitle("Open Resource File");
@@ -141,6 +141,7 @@ public class MediaPlayerGUI extends Application {
 	    		//mp.addToLib(filePath, name);
 	    		//listOfSongs.addAll(saveToList(songfile.getAbsolutePath()));
 	    		mp.SaveFile(listOfSongs, save);
+	    		list = playList();
 	    	}
 	    }); 
 	    menuFile.getItems().add(openItem);
@@ -157,7 +158,7 @@ public class MediaPlayerGUI extends Application {
 		list.getSelectionModel().selectedItemProperty().addListener(
 		        (ObservableValue<? extends String> ov, String old_val, 
 		            String new_val) -> {
-		                System.out.println("h‰er" +new_val);
+		                System.out.println("h√§er" +new_val);
 		                songfile = mp.fetch(new_val);
 		                mp.stop();
 		                mp = new Mp3player();
@@ -174,7 +175,7 @@ public class MediaPlayerGUI extends Application {
 	}
 	private void saveToList(String s)
 	{
-		File userFile = new File(s);
+		/*File userFile = new File(s);
 		String filename = userFile.getName();
 		System.out.println(s);
 		String filePath = s.
@@ -187,6 +188,9 @@ public class MediaPlayerGUI extends Application {
 		listOfSongs.add("\n");
 		listOfSongs.add(name);
 		//return listOfSongs;
+		 * 
+		 */
+		listOfSongs.add(s);
 	}
 
 
