@@ -7,7 +7,6 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -16,7 +15,7 @@ import java.util.Set;
 
 public class MediaLib {
 	private HashMap<String, String> adressName = new HashMap<String, String>();
-	protected File file = new File("C:/Users/borgs_000/git/mp3Player/mp3Player/lib/mediaLib.txt");
+	protected File file = new File("C:/Users/Simons/git/HamsterMP3player/mp3Player/Lib/mediaLib.txt");
 	private ArrayList<String> adress = new ArrayList<String>();
 	private ArrayList<String> name = new ArrayList<String>();
 	private String temp = null;
@@ -24,9 +23,9 @@ public class MediaLib {
 	protected File fetch(String name) {
 		try (BufferedReader fin = new BufferedReader(new FileReader(file))) {
 			while ((temp = fin.readLine()) != null) {
-				String adress = fin.readLine();
+				String adress = temp;
 				if (adress.contains(name))
-					return new File(temp + adress + ".mp3");
+					return new File(adress); // + ".mp3");
 			}
 		} catch (FileNotFoundException e) {
 			try (BufferedWriter bw = new BufferedWriter(new FileWriter(file))) {
@@ -45,11 +44,11 @@ public class MediaLib {
 	protected ArrayList<String> readLib() {
 		ArrayList<String> allSongs = new ArrayList<String>();
 		String text = "";
-		int i = 0;
+		//int i = 0;
 		try (BufferedReader fin = new BufferedReader(new FileReader(file))) {
 			while ((text = fin.readLine()) != null) {
 				System.out.println(text);
-				if (i++ % 2 != 0)
+				//if (i++ % 2 != 0)
 					allSongs.add(text);
 			}
 		} catch (FileNotFoundException e) {
@@ -65,14 +64,14 @@ public class MediaLib {
 		}
 		return allSongs;
 	}
-
+	/*
 	protected void saveLib(ArrayList<String> s1, File f) {
 		try (BufferedWriter fout = new BufferedWriter(new FileWriter(file));) {
-			System.out.println("h‰r");
+			System.out.println("h√§r");
 			Set<Entry<String, String>> mapSet = adressName.entrySet();
 			Iterator<Entry<String, String>> mapIterator = mapSet.iterator();
 			while (mapIterator.hasNext()) {
-				System.out.println("h‰r iter");
+				System.out.println("h√§r iter");
 				Entry<String, String> mapEntry = (Entry<String, String>) mapIterator.next();
 				adress.add(mapEntry.getKey());
 				name.add(mapEntry.getValue());
@@ -87,7 +86,7 @@ public class MediaLib {
 			e.printStackTrace();
 		}
 
-	}
+	}*/
 
 	protected void SaveFile(ArrayList<String> content, File file) {
 		for (String s1 : content)
@@ -97,7 +96,7 @@ public class MediaLib {
 			//content.addAll(readLib());
 			fileWriter = new FileWriter(file);
 			for (String s : content)
-				fileWriter.write(s);
+				fileWriter.write(s+"\n");
 			fileWriter.close();
 		} catch (IOException ex) {
 
