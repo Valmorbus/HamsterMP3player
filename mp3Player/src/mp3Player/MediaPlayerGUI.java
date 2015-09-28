@@ -1,6 +1,7 @@
 package mp3Player;
 
 import java.io.File;
+import java.nio.file.Path;
 import java.util.ArrayList;
 
 import javafx.application.Application;
@@ -128,7 +129,11 @@ public class MediaPlayerGUI extends Application {
 	    		fileChooser.setTitle("Open Resource File");
 	    		songfile =fileChooser.showOpenDialog(stage);
 	    		String name = songfile.getName();
-	    		ml.addToLib(songfile.getAbsolutePath(), name);
+	    		String absolutePath = songfile.getAbsolutePath();
+	    		String filePath = absolutePath.
+	    				substring(0,absolutePath.lastIndexOf(File.separator))+"\\";
+	    		System.out.println(filePath + " " + name);
+	    		ml.addToLib(filePath, name);
 	    	}
 	    });
 	    
