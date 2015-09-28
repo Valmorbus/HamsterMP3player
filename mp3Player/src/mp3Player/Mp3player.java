@@ -9,7 +9,7 @@ import javafx.scene.media.MediaPlayer;
 
 public class Mp3player extends MediaLib {
 	private MediaPlayer mediaPlayer = null; 
-	private boolean playing = false;
+	//private boolean playing = false;
 
 	public void playing(String text, File file) {
 		
@@ -24,11 +24,11 @@ public class Mp3player extends MediaLib {
 			mediaPlayer = new MediaPlayer(media);
 		if (text.equals("Play")) {
 			mediaPlayer.pause();
-			playing = false;
+			//playing = false;
 			}
 		else{
 			mediaPlayer.play();
-			playing = true;
+			//playing = true;
 		}			
 	}
 	public void stop()

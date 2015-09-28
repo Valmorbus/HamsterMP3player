@@ -1,14 +1,12 @@
 package mp3Player;
 
 import java.io.File;
-import java.nio.file.Path;
 import java.util.ArrayList;
 
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
-import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -26,7 +24,6 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
@@ -40,15 +37,18 @@ public class MediaPlayerGUI extends Application {
 	private Image image = new Image(file2.toURI().toString());
 	private Image image2 = new Image(file.toURI().toString());
 	private ListView<String> list = new ListView<String>();
+	private ArrayList<String> listOfSongs = new ArrayList<String>();
+	private File save = new File("C:/Users/borgs_000/git/mp3Player/mp3Player/lib/mediaLib.txt");
 	
-	
+
 	public static void main(String[] args) {
 		launch(args);
 	}
 
 	@Override
 	public void start(Stage primaryStage) {
-	
+		listOfSongs.addAll(mp.readLib());
+		
 		Group root = new Group();
 		Scene scene = new Scene(root);
 		HBox hbox = new HBox();
@@ -78,6 +78,7 @@ public class MediaPlayerGUI extends Application {
 				iv.setImage(image);
 			}
 		});
+		
 		ListView<String> list = playList();
 		
 		MenuBar menuBar = menu(primaryStage);
@@ -113,8 +114,9 @@ public class MediaPlayerGUI extends Application {
 	    	  fileChooser.setTitle("Save playlist");
 	    	    FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("TXT files (*.txt)", "*.txt");
 	    	  fileChooser.getExtensionFilters().add(extFilter);
-	    	  File save = new File("C:/Users/borgs_000/git/mp3Player/mp3Player/lib/mediaLib.txt");
-	    	  ml.saveLib( ml.readLib(), save);
+	    	 
+	    	 // ml.saveLib( ml.readLib(), save);
+	    	  //mp.saveLib(listOfSongs, save);
 	        Platform.exit();
 	      }
 	    });
@@ -129,18 +131,20 @@ public class MediaPlayerGUI extends Application {
 	    		fileChooser.setTitle("Open Resource File");
 	    		songfile =fileChooser.showOpenDialog(stage);
 	    		String name = songfile.getName();
-	    		String absolutePath = songfile.getAbsolutePath();
-	    		String filePath = absolutePath.
-	    				substring(0,absolutePath.lastIndexOf(File.separator))+"\\";
-	    		System.out.println(filePath + " " + name);
-	    		ml.addToLib(filePath, name);
-	    		
+	    		//String absolutePath = songfile.getAbsolutePath();
+	    		//System.out.println(absolutePath);
+	    		//String filePath = absolutePath.
+	    			//	substring(0,absolutePath.lastIndexOf(File.separator))+"\\";
+	    		//name = name.substring(0, name.lastIndexOf('.'));
+	    		//System.out.println(absolutePath + " " + name);
+	    		saveToList(songfile.getAbsolutePath());
+	    		//mp.addToLib(filePath, name);
+	    		//listOfSongs.addAll(saveToList(songfile.getAbsolutePath()));
+	    		mp.SaveFile(listOfSongs, save);
 	    	}
-	    });
-	    
+	    }); 
 	    menuFile.getItems().add(openItem);
 	    menuFile.getItems().add(exitItem);
-		
 		menuBar.getMenus().addAll(menuFile, menuEdit, menuView);
 		return menuBar;
 	}
@@ -154,7 +158,7 @@ public class MediaPlayerGUI extends Application {
 		        (ObservableValue<? extends String> ov, String old_val, 
 		            String new_val) -> {
 		                System.out.println("häer" +new_val);
-		                songfile = ml.fetch(new_val);
+		                songfile = mp.fetch(new_val);
 		                mp.stop();
 		                mp = new Mp3player();
 		                mp.playing("Play", songfile);
@@ -167,6 +171,22 @@ public class MediaPlayerGUI extends Application {
 		list.setItems(items);
 		
 		return list;
+	}
+	private void saveToList(String s)
+	{
+		File userFile = new File(s);
+		String filename = userFile.getName();
+		System.out.println(s);
+		String filePath = s.
+				substring(0,s.lastIndexOf(File.separator))+"\\";
+		System.out.println("saveTo" +filePath);
+		
+		String name = filename.substring(0, filename.lastIndexOf("."));
+		System.out.println(name);
+		listOfSongs.add(filePath);
+		listOfSongs.add("\n");
+		listOfSongs.add(name);
+		//return listOfSongs;
 	}
 
 

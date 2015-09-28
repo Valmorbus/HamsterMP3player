@@ -16,7 +16,7 @@ import java.util.Set;
 
 public class MediaLib {
 	private HashMap<String, String> adressName = new HashMap<String, String>();
-	private File file = new File("C:/Users/borgs_000/git/mp3Player/mp3Player/lib/mediaLib.txt");
+	protected File file = new File("C:/Users/borgs_000/git/mp3Player/mp3Player/lib/mediaLib.txt");
 	private ArrayList<String> adress = new ArrayList<String>();
 	private ArrayList<String> name = new ArrayList<String>();
 	private String temp = null;
@@ -48,6 +48,7 @@ public class MediaLib {
 		int i = 0;
 		try (BufferedReader fin = new BufferedReader(new FileReader(file))) {
 			while ((text = fin.readLine()) != null) {
+				System.out.println(text);
 				if (i++ % 2 != 0)
 					allSongs.add(text);
 			}
@@ -88,10 +89,12 @@ public class MediaLib {
 
 	}
 
-	private void SaveFile(ArrayList<String> content, File file) {
+	protected void SaveFile(ArrayList<String> content, File file) {
+		for (String s1 : content)
+			System.out.println("saveFile" +s1);
 		try {
 			FileWriter fileWriter = null;
-			content.addAll(readLib());
+			//content.addAll(readLib());
 			fileWriter = new FileWriter(file);
 			for (String s : content)
 				fileWriter.write(s);
