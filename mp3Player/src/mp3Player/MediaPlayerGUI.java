@@ -134,6 +134,7 @@ public class MediaPlayerGUI extends Application {
 	    				substring(0,absolutePath.lastIndexOf(File.separator))+"\\";
 	    		System.out.println(filePath + " " + name);
 	    		ml.addToLib(filePath, name);
+	    		
 	    	}
 	    });
 	    
@@ -155,8 +156,11 @@ public class MediaPlayerGUI extends Application {
 		                System.out.println("häer" +new_val);
 		                songfile = ml.fetch(new_val);
 		                mp.stop();
-		               
-						mp.playing("Pause", songfile);
+		                mp = new Mp3player();
+		                mp.playing("Play", songfile);
+		                
+		                //mp.stop();         
+						//mp.playing("Pause", songfile);
 		                
 		    });
 		

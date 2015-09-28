@@ -23,10 +23,10 @@ public class MediaLib {
 
 	protected File fetch(String name) {
 		try (BufferedReader fin = new BufferedReader(new FileReader(file))) {
-			while ((temp = fin.readLine()) != null){
-					String adress =  fin.readLine();
+			while ((temp = fin.readLine()) != null) {
+				String adress = fin.readLine();
 				if (adress.contains(name))
-					return new File(temp+adress+".mp3");
+					return new File(temp + adress + ".mp3");
 			}
 		} catch (FileNotFoundException e) {
 			try (BufferedWriter bw = new BufferedWriter(new FileWriter(file))) {
@@ -45,11 +45,11 @@ public class MediaLib {
 	protected ArrayList<String> readLib() {
 		ArrayList<String> allSongs = new ArrayList<String>();
 		String text = "";
-		int i =0;
+		int i = 0;
 		try (BufferedReader fin = new BufferedReader(new FileReader(file))) {
-			while ((text =fin.readLine()) != null) {
-				if(i++%2!=0)
-				allSongs.add(text);
+			while ((text = fin.readLine()) != null) {
+				if (i++ % 2 != 0)
+					allSongs.add(text);
 			}
 		} catch (FileNotFoundException e) {
 			try (BufferedWriter bw = new BufferedWriter(new FileWriter(file))) {
@@ -75,7 +75,7 @@ public class MediaLib {
 				Entry<String, String> mapEntry = (Entry<String, String>) mapIterator.next();
 				adress.add(mapEntry.getKey());
 				name.add(mapEntry.getValue());
-				System.out.println(mapEntry.getKey()+" "+mapEntry.getValue());
+				System.out.println(mapEntry.getKey() + " " + mapEntry.getValue());
 			}
 			for (String s : adress) {
 				for (String n : name)
@@ -85,22 +85,22 @@ public class MediaLib {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 	}
-	 
-    private void SaveFile(ArrayList<String> content, File file){
-        try {
-            FileWriter fileWriter = null;
-             
-            fileWriter = new FileWriter(file);
-            for (String s: content)
-            	fileWriter.write(s);
-            fileWriter.close();
-        } catch (IOException ex) {
-           
-        }
-         
-    }
+
+	private void SaveFile(ArrayList<String> content, File file) {
+		try {
+			FileWriter fileWriter = null;
+			content.addAll(readLib());
+			fileWriter = new FileWriter(file);
+			for (String s : content)
+				fileWriter.write(s);
+			fileWriter.close();
+		} catch (IOException ex) {
+
+		}
+
+	}
 
 	public void addToLib(String path, String name) {
 		adressName.put(path, name);
