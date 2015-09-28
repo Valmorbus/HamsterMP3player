@@ -20,12 +20,12 @@ public class MediaLib {
 	private ArrayList<String> name = new ArrayList<String>();
 	private String temp = null;
 
-	protected String fetch(String name) {
+	protected File fetch(String name) {
 		try (BufferedReader fin = new BufferedReader(new FileReader(file))) {
 			while ((temp = fin.readLine()) != null){
 					String adress =  fin.readLine();
 				if (adress.contains(name))
-					return temp+adress;
+					return new File(temp+adress+".mp3");
 			}
 		} catch (FileNotFoundException e) {
 			try (BufferedWriter bw = new BufferedWriter(new FileWriter(file))) {
@@ -38,7 +38,7 @@ public class MediaLib {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return "File not Found";
+		return null;
 	}
 
 	protected ArrayList<String> readLib() {

@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.ArrayList;
 
 import javafx.application.Application;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -15,6 +16,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
+import javafx.scene.control.SelectionMode;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
@@ -22,6 +24,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 public class MediaPlayerGUI extends Application {
+	File songfile = new File("C:/Users/borgs_000/git/mp3Player/mp3Player/lib/The Hampsterdance Song.mp3");
 
 	public static void main(String[] args) {
 		launch(args);
@@ -31,7 +34,7 @@ public class MediaPlayerGUI extends Application {
 	public void start(Stage primaryStage) {
 
 		Mp3player mp = new Mp3player();
-		File songfile = new File("C:/Users/borgs_000/git/mp3Player/mp3Player/lib/The Hampsterdance Song.mp3");
+		
 		Group root = new Group();
 		Scene scene = new Scene(root);
 		HBox hbox = new HBox();
@@ -97,15 +100,16 @@ public class MediaPlayerGUI extends Application {
 		Mp3player mp = new Mp3player();
 		ListView<String> list = new ListView<String>();
 		ObservableList<String> items = FXCollections.observableArrayList(mp.readLib());
-
-		items.addListener(new ListChangeListener<String>() {
-			@Override
-			public void onChanged(ListChangeListener.Change change) {
-				File f = new File(ml.fetch(change.toString()));
-				mp.playing("Play", f);
-				System.out.println("här");
-			}
-		});
+		list.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+		list.getSelectionModel().selectedItemProperty().addListener(
+		        (ObservableValue<? extends String> ov, String old_val, 
+		            String new_val) -> {
+		                System.out.println("häer" +new_val);
+		                songfile = ml.fetch(new_val);
+						mp.playing("Play", songfile);
+		                
+		    });
+		
 		list.setItems(items);
 		
 		return list;

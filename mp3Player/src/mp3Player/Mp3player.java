@@ -12,7 +12,7 @@ public class Mp3player extends MediaLib {
 	private boolean playing = false;
 
 	public void playing(String text, File file) {
-		
+		System.out.println("now playing " +file.toString());
 		Media media = null;
 		try {
 			URL res = file.toURI().toURL();
