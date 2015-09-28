@@ -7,6 +7,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -64,25 +65,42 @@ public class MediaLib {
 		return allSongs;
 	}
 
-	protected void saveLib() {
+	protected void saveLib(ArrayList<String> s1, File f) {
 		try (BufferedWriter fout = new BufferedWriter(new FileWriter(file));) {
-
+			System.out.println("här");
 			Set<Entry<String, String>> mapSet = adressName.entrySet();
 			Iterator<Entry<String, String>> mapIterator = mapSet.iterator();
 			while (mapIterator.hasNext()) {
+				System.out.println("här iter");
 				Entry<String, String> mapEntry = (Entry<String, String>) mapIterator.next();
 				adress.add(mapEntry.getKey());
 				name.add(mapEntry.getValue());
+				System.out.println(mapEntry.getKey()+" "+mapEntry.getValue());
 			}
 			for (String s : adress) {
 				for (String n : name)
-					fout.write(s + '\n' + n + ".mp3");
+					fout.write(s + '\n' + n);
 			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
 	}
+	 
+    private void SaveFile(ArrayList<String> content, File file){
+        try {
+            FileWriter fileWriter = null;
+             
+            fileWriter = new FileWriter(file);
+            for (String s: content)
+            	fileWriter.write(s);
+            fileWriter.close();
+        } catch (IOException ex) {
+           
+        }
+         
+    }
 
 	public void addToLib(String path, String name) {
 		adressName.put(path, name);
