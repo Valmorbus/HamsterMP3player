@@ -7,10 +7,10 @@ import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 
 public class Mp3player extends MediaLib {
-	private MediaPlayer mediaPlayer = null; 
+	private MediaPlayer mediaPlayer = null;
 
 	public void playing(String text, File file) {
-		
+
 		Media media = null;
 		try {
 			URL res = file.toURI().toURL();
@@ -22,16 +22,14 @@ public class Mp3player extends MediaLib {
 			mediaPlayer = new MediaPlayer(media);
 		if (text.equals("Play")) {
 			mediaPlayer.pause();
-			}
-		else{
+		} else {
 			mediaPlayer.play();
-		}			
+		}
 	}
-	public void stop()
-	{
+
+	public void stop() {
 		if (mediaPlayer != null)
 			mediaPlayer.stop();
 	}
-
 
 }

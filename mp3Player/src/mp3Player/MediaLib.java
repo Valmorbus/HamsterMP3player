@@ -12,9 +12,7 @@ import java.util.HashMap;
 
 public class MediaLib {
 	private HashMap<String, String> adressName = new HashMap<String, String>();
-	protected File file = new File("C:/Users/Simons/git/HamsterMP3player/mp3Player/Lib/mediaLib.txt");
-	private ArrayList<String> adress = new ArrayList<String>();
-	private ArrayList<String> name = new ArrayList<String>();
+	protected File file = new File("C:/Users/borgs_000/git/mp3Player/mp3Player/Lib/mediaLib.txt");
 	private String temp = null;
 
 	protected File fetch(String name) {
@@ -41,12 +39,10 @@ public class MediaLib {
 	protected ArrayList<String> readLib() {
 		ArrayList<String> allSongs = new ArrayList<String>();
 		String text = "";
-		//int i = 0;
+		// int i = 0;
 		try (BufferedReader fin = new BufferedReader(new FileReader(file))) {
 			while ((text = fin.readLine()) != null) {
-				System.out.println(text);
-				//if (i++ % 2 != 0)
-					allSongs.add(text);
+				allSongs.add(text);
 			}
 		} catch (FileNotFoundException e) {
 			try (BufferedWriter bw = new BufferedWriter(new FileWriter(file))) {
@@ -63,19 +59,15 @@ public class MediaLib {
 	}
 
 	protected void SaveFile(ArrayList<String> content, File file) {
-		for (String s1 : content)
-			System.out.println("saveFile" +s1);
 		try {
 			FileWriter fileWriter = null;
-			//content.addAll(readLib());
 			fileWriter = new FileWriter(file);
 			for (String s : content)
-				fileWriter.write(s+"\n");
+				fileWriter.write(s + "\n");
 			fileWriter.close();
 		} catch (IOException ex) {
 
 		}
-
 	}
 
 	public void addToLib(String path, String name) {
