@@ -2,7 +2,6 @@ package mp3Player;
 
 import java.io.File;
 import java.util.ArrayList;
-
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.beans.value.ObservableValue;
@@ -31,7 +30,6 @@ public class MediaPlayerGUI extends Application {
 	private String defaultSong = "C:/Users/Simons/git/HamsterMP3player/mp3Player/Lib/The Hampsterdance Song.mp3";
 	private File songfile = new File(defaultSong);
 	private Mp3player mp = new Mp3player();
-	//private MediaLib ml = new MediaLib();
 	private File file = new File("C:/Users/Simons/git/HamsterMP3player/mp3Player/Lib/Dancinghamster.gif");
 	private File file2 = new File("C:/Users/Simons/git/HamsterMP3player/mp3Player/Lib/hamster.gif");
 	private Image image = new Image(file2.toURI().toString());
@@ -39,7 +37,10 @@ public class MediaPlayerGUI extends Application {
 	private ListView<String> list = new ListView<String>();
 	private ArrayList<String> listOfSongs = new ArrayList<String>();
 	private File save = new File("C:/Users/Simons/git/HamsterMP3player/mp3Player/Lib/mediaLib.txt");
-	
+	private String textOnButton = "Play";
+	private ImageView iv = new ImageView();
+
+	private Button playButton = new Button("Play");
 
 	public static void main(String[] args) {
 		launch(args);
@@ -48,21 +49,19 @@ public class MediaPlayerGUI extends Application {
 	@Override
 	public void start(Stage primaryStage) {
 		listOfSongs.addAll(mp.readLib());
-		
 		Group root = new Group();
 		Scene scene = new Scene(root);
 		HBox hbox = new HBox();
-		ImageView iv = new ImageView();
-		Button playButton = new Button("Play");
+		playButton = new Button("Play");
 		iv.setImage(image);
-		
+
 		playButton.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent e) {
-				String text = (playButton.getText().equals("Play")) ? "Pause" : "Play";
-				playButton.setText(text);
-				mp.playing(text, songfile);
-				if (text.equals("Play"))
+				textOnButton = (playButton.getText().equals("Play")) ? "Pause" : "Play";
+				playButton.setText(textOnButton);
+				mp.playing(textOnButton, songfile);
+				if (textOnButton.equals("Play"))
 					iv.setImage(image);
 				else
 					iv.setImage(image2);
@@ -78,120 +77,100 @@ public class MediaPlayerGUI extends Application {
 				iv.setImage(image);
 			}
 		});
-		
+
 		ListView<String> list = playList();
-		
+
 		MenuBar menuBar = menu(primaryStage);
 		hbox.getChildren().addAll(menuBar, iv, playButton, stopButton);
 		hbox.getChildren().add(list);
 		root.getChildren().add(hbox);
+
+		// https://docs.oracle.com/javase/8/javafx/events-tutorial/drag-drop.htm#CHDJFJDH
 
 		primaryStage.setTitle("mp3 player");
 		primaryStage.setWidth(550);
 		primaryStage.setHeight(400);
 		primaryStage.setScene(scene);
 		primaryStage.show();
-		
-		
 
 	}
+
 	/**
 	 * Menu for ...
+	 * 
 	 * @return
 	 */
-	private MenuBar menu(Stage stage) 
-	{
+	private MenuBar menu(Stage stage) {
 		MenuBar menuBar = new MenuBar();
 		Menu menuFile = new Menu("File");
 		Menu menuEdit = new Menu("Edit");
 		Menu menuView = new Menu("View");
 		MenuItem exitItem = new MenuItem("Exit", null);
-	    exitItem.setMnemonicParsing(true);
-	    exitItem.setAccelerator(new KeyCodeCombination(KeyCode.X,KeyCombination.CONTROL_DOWN));
-	    exitItem.setOnAction(new EventHandler<ActionEvent>() {
-	      public void handle(ActionEvent event) {
-	    	  FileChooser fileChooser = new FileChooser();
-	    	  fileChooser.setTitle("Save playlist");
-	    	    FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("TXT files (*.txt)", "*.txt");
-	    	  fileChooser.getExtensionFilters().add(extFilter);
-	    	 
-	    	 // ml.saveLib( ml.readLib(), save);
-	    	  //mp.saveLib(listOfSongs, save);
-	        Platform.exit();
-	      }
-	    });
-	    MenuItem openItem = new MenuItem("Open", null);
-	    openItem.setMnemonicParsing(true);
-	    openItem.setAccelerator(new KeyCodeCombination(KeyCode.O,KeyCombination.CONTROL_DOWN));
-	    openItem.setOnAction(new EventHandler<ActionEvent>(){
-	    	public void handle(ActionEvent event){
-	    		System.out.println("här");
-	    		FileChooser fileChooser = new FileChooser();
-	    		//fileChooser.getExtensionFilters().add( new FileChooser.ExtensionFilter("mp3"));
-	    		fileChooser.setTitle("Open Resource File");
-	    		songfile =fileChooser.showOpenDialog(stage);
-	    		String name = songfile.getName();
-	    		//String absolutePath = songfile.getAbsolutePath();
-	    		//System.out.println(absolutePath);
-	    		//String filePath = absolutePath.
-	    			//	substring(0,absolutePath.lastIndexOf(File.separator))+"\\";
-	    		//name = name.substring(0, name.lastIndexOf('.'));
-	    		//System.out.println(absolutePath + " " + name);
-	    		saveToList(songfile.getAbsolutePath());
-	    		//mp.addToLib(filePath, name);
-	    		//listOfSongs.addAll(saveToList(songfile.getAbsolutePath()));
-	    		mp.SaveFile(listOfSongs, save);
-	    		list = playList();
-	    	}
-	    }); 
-	    menuFile.getItems().add(openItem);
-	    menuFile.getItems().add(exitItem);
+		exitItem.setMnemonicParsing(true);
+		exitItem.setAccelerator(new KeyCodeCombination(KeyCode.X, KeyCombination.CONTROL_DOWN));
+		exitItem.setOnAction(new EventHandler<ActionEvent>() {
+			public void handle(ActionEvent event) {
+				FileChooser fileChooser = new FileChooser();
+				fileChooser.setTitle("Save playlist");
+				FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("TXT files (*.txt)", "*.txt");
+				fileChooser.getExtensionFilters().add(extFilter);
+
+				Platform.exit();
+			}
+		});
+		MenuItem openItem = new MenuItem("Open", null);
+		openItem.setMnemonicParsing(true);
+		openItem.setAccelerator(new KeyCodeCombination(KeyCode.O, KeyCombination.CONTROL_DOWN));
+		openItem.setOnAction(new EventHandler<ActionEvent>() {
+			public void handle(ActionEvent event) {
+				System.out.println("här");
+				FileChooser fileChooser = new FileChooser();
+				fileChooser.setTitle("Open Resource File");
+				songfile = fileChooser.showOpenDialog(stage);
+				String name = songfile.getName();
+				saveToList(songfile.getAbsolutePath());
+				mp.SaveFile(listOfSongs, save);
+				list = playList();
+			}
+		});
+		menuFile.getItems().add(openItem);
+		menuFile.getItems().add(exitItem);
 		menuBar.getMenus().addAll(menuFile, menuEdit, menuView);
 		return menuBar;
 	}
-	private ListView<String> playList()
-	{
-		
-		//Mp3player mp = new Mp3player();
-		ObservableList<String> items = FXCollections.observableArrayList(mp.readLib());
+
+	private ListView<String> playList() {
+		ObservableList<String> items = FXCollections.observableArrayList(getOnlyName());
 		list.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
-		list.getSelectionModel().selectedItemProperty().addListener(
-		        (ObservableValue<? extends String> ov, String old_val, 
-		            String new_val) -> {
-		                System.out.println("häer" +new_val);
-		                songfile = mp.fetch(new_val);
-		                mp.stop();
-		                mp = new Mp3player();
-		                mp.playing("Play", songfile);
-		                
-		                //mp.stop();         
-						//mp.playing("Pause", songfile);
-		                
-		    });
-		
+		list.getSelectionModel().selectedItemProperty()
+				.addListener((ObservableValue<? extends String> ov, String old_val, String new_val) -> {
+					System.out.println("häer" + new_val);
+					songfile = mp.fetch(new_val);
+					mp.stop();
+					mp = new Mp3player();
+					playButton.setText("Pause");
+					mp.playing("Pause", songfile);
+					iv.setImage(image2);
+				});
+
 		list.setItems(items);
-		
+
 		return list;
 	}
-	private void saveToList(String s)
-	{
-		/*File userFile = new File(s);
-		String filename = userFile.getName();
-		System.out.println(s);
-		String filePath = s.
-				substring(0,s.lastIndexOf(File.separator))+"\\";
-		System.out.println("saveTo" +filePath);
-		
-		String name = filename.substring(0, filename.lastIndexOf("."));
-		System.out.println(name);
-		listOfSongs.add(filePath);
-		listOfSongs.add("\n");
-		listOfSongs.add(name);
-		//return listOfSongs;
-		 * 
-		 */
-		listOfSongs.add(s);
+
+	private ArrayList<String> getOnlyName() {
+		ArrayList<String> tempList = new ArrayList<String>();
+		for (String s : listOfSongs) {
+			File userFile = new File(s);
+			String filename = userFile.getName();
+			tempList.add(filename);
+		}
+		return tempList;
+
 	}
 
+	private void saveToList(String s) {
+		listOfSongs.add(s);
+	}
 
 }
