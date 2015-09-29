@@ -9,9 +9,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map.Entry;
-import java.util.Set;
 
 public class MediaLib {
 	private HashMap<String, String> adressName = new HashMap<String, String>();
@@ -64,29 +61,6 @@ public class MediaLib {
 		}
 		return allSongs;
 	}
-	/*
-	protected void saveLib(ArrayList<String> s1, File f) {
-		try (BufferedWriter fout = new BufferedWriter(new FileWriter(file));) {
-			System.out.println("här");
-			Set<Entry<String, String>> mapSet = adressName.entrySet();
-			Iterator<Entry<String, String>> mapIterator = mapSet.iterator();
-			while (mapIterator.hasNext()) {
-				System.out.println("här iter");
-				Entry<String, String> mapEntry = (Entry<String, String>) mapIterator.next();
-				adress.add(mapEntry.getKey());
-				name.add(mapEntry.getValue());
-				System.out.println(mapEntry.getKey() + " " + mapEntry.getValue());
-			}
-			for (String s : adress) {
-				for (String n : name)
-					fout.write(s + '\n' + n);
-			}
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-	}*/
 
 	protected void SaveFile(ArrayList<String> content, File file) {
 		for (String s1 : content)
