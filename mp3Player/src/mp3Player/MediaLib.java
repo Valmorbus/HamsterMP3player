@@ -12,7 +12,7 @@ import java.util.HashMap;
 
 public class MediaLib {
 	private HashMap<String, String> adressName = new HashMap<String, String>();
-	protected File file = new File("C:/Users/borgs_000/git/mp3Player/mp3Player/Lib/mediaLib.txt");
+	protected File file = new File("Data/mediaLib.txt");
 	private String temp = null;
 
 	protected File fetch(String name) {

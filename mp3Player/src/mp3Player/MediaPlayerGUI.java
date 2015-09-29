@@ -27,16 +27,16 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 public class MediaPlayerGUI extends Application {
-	private String defaultSong = "C:/Users/borgs_000/git/mp3Player/mp3Player/Lib/The Hampsterdance Song.mp3";
+	private String defaultSong = "Data/The Hampsterdance Song.mp3";
 	private File songfile = new File(defaultSong);
 	private Mp3player mp = new Mp3player();
-	private File file = new File("C:/Users/borgs_000/git/mp3Player/mp3Player/Lib/Dancinghamster.gif");
-	private File file2 = new File("C:/Users/borgs_000/git/mp3Player/mp3Player/Lib/hamster.gif");
+	private File file = new File("Data/Dancinghamster.gif");
+	private File file2 = new File("Data/hamster.gif");
 	private Image image = new Image(file2.toURI().toString());
 	private Image image2 = new Image(file.toURI().toString());
 	private ListView<String> list = new ListView<String>();
 	private ArrayList<String> listOfSongs = new ArrayList<String>();
-	private File save = new File("C:/Users/borgs_000/git/mp3Player/mp3Player/Lib/mediaLib.txt");
+	private File save = new File("Data/mediaLib.txt");
 	private String textOnButton = "Play";
 	private ImageView iv = new ImageView();
 
