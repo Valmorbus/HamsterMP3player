@@ -8,6 +8,7 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.Scene;
@@ -19,10 +20,16 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.DragEvent;
+import javafx.scene.input.Dragboard;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.input.TransferMode;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
@@ -54,6 +61,7 @@ public class MediaPlayerGUI extends Application {
 		HBox hbox = new HBox();
 		playButton = new Button("Play");
 		iv.setImage(image);
+		// StackPane contentPane = new StackPane();
 
 		playButton.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
@@ -85,8 +93,23 @@ public class MediaPlayerGUI extends Application {
 		hbox.getChildren().add(list);
 		root.getChildren().add(hbox);
 
-		// https://docs.oracle.com/javase/8/javafx/events-tutorial/drag-drop.htm#CHDJFJDH
-
+		scene.setOnDragOver(new EventHandler<DragEvent>() {
+			@Override
+			public void handle(DragEvent event) {
+				Dragboard db = event.getDragboard();
+				if (db.hasFiles()) {
+					event.acceptTransferModes(TransferMode.COPY);
+				} else {
+					event.consume();
+				}
+			}
+		});
+		scene.setOnDragDropped(new EventHandler<DragEvent>() {
+			@Override
+			public void handle(DragEvent event) {
+				dragDropped(event);
+			}
+		});
 		primaryStage.setTitle("mp3 player");
 		primaryStage.setWidth(550);
 		primaryStage.setHeight(400);
@@ -126,12 +149,13 @@ public class MediaPlayerGUI extends Application {
 				FileChooser fileChooser = new FileChooser();
 				fileChooser.setTitle("Open Resource File");
 				songfile = fileChooser.showOpenDialog(stage);
-				String name = songfile.getName();
+				// String name = songfile.getName();
 				saveToList(songfile.getAbsolutePath());
 				mp.SaveFile(listOfSongs, save);
 				list = playList();
 			}
 		});
+
 		menuFile.getItems().add(openItem);
 		menuFile.getItems().add(exitItem);
 		menuBar.getMenus().addAll(menuFile, menuEdit, menuView);
@@ -143,7 +167,7 @@ public class MediaPlayerGUI extends Application {
 		list.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
 		list.getSelectionModel().selectedItemProperty()
 				.addListener((ObservableValue<? extends String> ov, String old_val, String new_val) -> {
-					System.out.println("häer" + new_val);
+					// System.out.println("häer" + new_val);
 					songfile = mp.fetch(new_val);
 					mp.stop();
 					mp = new Mp3player();
@@ -170,6 +194,27 @@ public class MediaPlayerGUI extends Application {
 
 	private void saveToList(String s) {
 		listOfSongs.add(s);
+	}
+
+	private void dragDropped(final DragEvent event) {
+		Dragboard db = event.getDragboard();
+		boolean success = false;
+		if (db.hasFiles()) {
+			success = true;
+			String filePath = null;
+			for (File file : db.getFiles()) {
+				filePath = file.getAbsolutePath();
+				System.out.println(filePath);
+				songfile = file;
+				saveToList(songfile.getAbsolutePath());
+				mp.SaveFile(listOfSongs, save);
+				list = playList();
+			}
+		}
+		event.setDropCompleted(success);
+
+		event.consume();
+
 	}
 
 }
