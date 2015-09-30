@@ -1,6 +1,7 @@
 package mp3Player;
 
 import java.io.File;
+import java.net.URL;
 import java.util.ArrayList;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -8,7 +9,6 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
-import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.Scene;
@@ -25,11 +25,8 @@ import javafx.scene.input.Dragboard;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.input.TransferMode;
-import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.StackPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
@@ -61,8 +58,9 @@ public class MediaPlayerGUI extends Application {
 		HBox hbox = new HBox();
 		playButton = new Button("Play");
 		iv.setImage(image);
-		// StackPane contentPane = new StackPane();
-
+		
+		
+		
 		playButton.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent e) {
@@ -92,6 +90,14 @@ public class MediaPlayerGUI extends Application {
 		hbox.getChildren().addAll(menuBar, iv, playButton, stopButton);
 		hbox.getChildren().add(list);
 		root.getChildren().add(hbox);
+		
+		
+		hbox.setStyle("-fx-background-color: #333333;");
+
+		
+		
+		
+		
 
 		scene.setOnDragOver(new EventHandler<DragEvent>() {
 			@Override
@@ -110,6 +116,7 @@ public class MediaPlayerGUI extends Application {
 				dragDropped(event);
 			}
 		});
+		
 		primaryStage.setTitle("mp3 player");
 		primaryStage.setWidth(550);
 		primaryStage.setHeight(400);
