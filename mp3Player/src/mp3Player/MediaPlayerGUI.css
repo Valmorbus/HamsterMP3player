@@ -1,11 +1,11 @@
 @CHARSET "ISO-8859-1";
 
-.scene{
+Scene{
 	-fx-background-color: #333333;
 }
 .root{
 	-fx-background-image: url("hamster.gif");
 }
-.hbox{
+HBox{
 	-fx-background-color: #333333;
 }

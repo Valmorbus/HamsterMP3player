@@ -92,8 +92,10 @@ public class MediaPlayerGUI extends Application {
 		root.getChildren().add(hbox);
 		
 		
-		hbox.setStyle("-fx-background-color: #333333;");
-
+		//hbox.setStyle("-fx-background-color: #333333;");
+		String css = MediaPlayerGUI.class.getResource("MediaPlayerGUI.css").toExternalForm();
+        scene.getStylesheets().clear();
+        scene.getStylesheets().add(css);
 		
 		
 		
