@@ -1,11 +1,20 @@
-@CHARSET "ISO-8859-1";
 
-Scene{
+.scene{
 	-fx-background-color: #333333;
 }
 .root{
-	-fx-background-image: url("hamster.gif");
+	-fx-background-color: #CCFF99;
 }
 HBox{
-	-fx-background-color: #333333;
+	-fx-background-color: #CCFF99;
+}
+#play {
+	 -fx-graphic: url(file:///C:/Users/borgs_000/git/mp3Player/mp3Player/Data/play.jpg);  
+   
+}
+#stop{
+	
+}
+#list{
+	
 }

@@ -6,7 +6,7 @@ import java.net.URL;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 
-public class Mp3player extends MediaLib {
+public class Mp3player extends MediaLib implements MediaPlayerHandler{
 	private MediaPlayer mediaPlayer = null;
 
 	public void playing(String text, File file) {
@@ -21,15 +21,39 @@ public class Mp3player extends MediaLib {
 		if (mediaPlayer == null)
 			mediaPlayer = new MediaPlayer(media);
 		if (text.equals("Play")) {
-			mediaPlayer.pause();
+			pause();
 		} else {
-			mediaPlayer.play();
+			play();
 		}
 	}
-
+	@Override
 	public void stop() {
 		if (mediaPlayer != null)
 			mediaPlayer.stop();
+	}
+
+	@Override
+	public void play() {
+		// TODO Auto-generated method stub
+		mediaPlayer.play();
+	}
+
+	@Override
+	public void forward() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void reverse() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void pause() {
+		mediaPlayer.pause();
+		
 	}
 
 }

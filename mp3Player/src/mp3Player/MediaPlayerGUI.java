@@ -17,6 +17,7 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.RadioMenuItem;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -43,8 +44,8 @@ public class MediaPlayerGUI extends Application {
 	private File save = new File("Data/mediaLib.txt");
 	private String textOnButton = "Play";
 	private ImageView iv = new ImageView();
-
 	private Button playButton = new Button("Play");
+	private Stage stage = null;
 
 	public static void main(String[] args) {
 		launch(args);
@@ -57,6 +58,7 @@ public class MediaPlayerGUI extends Application {
 		Scene scene = new Scene(root);
 		HBox hbox = new HBox();
 		playButton = new Button("Play");
+		playButton.setId("play"); 
 		iv.setImage(image);
 		
 		
@@ -74,6 +76,7 @@ public class MediaPlayerGUI extends Application {
 			}
 		});
 		Button stopButton = new Button("Stop");
+		stopButton.setId("stop");
 		stopButton.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent e) {
@@ -83,24 +86,22 @@ public class MediaPlayerGUI extends Application {
 				iv.setImage(image);
 			}
 		});
-
+		
 		ListView<String> list = playList();
+		list.setId("list");
+		HBox menuHbox = new HBox();
+		
 
 		MenuBar menuBar = menu(primaryStage);
+		menuHbox.getChildren().add(menuBar);
 		hbox.getChildren().addAll(menuBar, iv, playButton, stopButton);
-		hbox.getChildren().add(list);
-		root.getChildren().add(hbox);
-		
-		
-		//hbox.setStyle("-fx-background-color: #333333;");
-		String css = MediaPlayerGUI.class.getResource("MediaPlayerGUI.css").toExternalForm();
-        scene.getStylesheets().clear();
-        scene.getStylesheets().add(css);
+		//hbox.getChildren().add(list);
+		root.getChildren().addAll(menuHbox,hbox);
+		root.setAutoSizeChildren(true);
 		
 		
 		
-		
-
+        
 		scene.setOnDragOver(new EventHandler<DragEvent>() {
 			@Override
 			public void handle(DragEvent event) {
@@ -118,12 +119,20 @@ public class MediaPlayerGUI extends Application {
 				dragDropped(event);
 			}
 		});
+		layout(scene);
 		
 		primaryStage.setTitle("mp3 player");
-		primaryStage.setWidth(550);
-		primaryStage.setHeight(400);
+		primaryStage.setWidth(480);
+		primaryStage.setHeight(170);
+		primaryStage.sizeToScene();
 		primaryStage.setScene(scene);
 		primaryStage.show();
+		
+		//playList to be added in own window after file chooser choice
+		
+
+		
+		
 
 	}
 
@@ -164,9 +173,28 @@ public class MediaPlayerGUI extends Application {
 				list = playList();
 			}
 		});
+		RadioMenuItem playList = new RadioMenuItem("Playlist", null);
+		playList.setMnemonicParsing(true);
+		playList.setAccelerator(new KeyCodeCombination(KeyCode.P, KeyCombination.CONTROL_DOWN));
+		playList.setSelected(false);
+		playList.setOnAction(new EventHandler<ActionEvent>() {
+			public void handle(ActionEvent event) {
+				//playList.setSelected(true);
+				
+				if(playList.isSelected())
+					playListWindow(stage);
+				
+				else{
+					playList.setSelected(false);
+					closePlayListWindow();
+				}
+					
+			}
+		});
 
 		menuFile.getItems().add(openItem);
 		menuFile.getItems().add(exitItem);
+		menuView.getItems().add(playList);
 		menuBar.getMenus().addAll(menuFile, menuEdit, menuView);
 		return menuBar;
 	}
@@ -224,6 +252,41 @@ public class MediaPlayerGUI extends Application {
 
 		event.consume();
 
+	}
+	private void layout(Scene scene)
+	{
+		String css = MediaPlayerGUI.class.getResource("MediaPlayerGUI.css").toExternalForm();
+        scene.getStylesheets().clear();
+        scene.getStylesheets().add(css);
+        
+        
+	}
+	
+	private void playListWindow(Stage primaryStage)
+	{
+		Scene secondscene = null;
+		Group secondroot = new Group();
+		
+		if (secondscene == null)
+		secondscene = new Scene(secondroot);	
+		secondroot.getChildren().add(list);
+		secondroot.autosize();
+		if (stage == null)
+			stage = new Stage();
+		stage.initOwner(primaryStage);
+		stage.sizeToScene();
+		stage.setScene(secondscene);
+		stage.setWidth(200);
+		//stage.setScene(scene);
+		stage.show();
+		//return stage;
+	}
+	private void closePlayListWindow()
+	{
+		if (stage != null){
+			stage.close();
+			stage = null;
+			}
 	}
 
 }
