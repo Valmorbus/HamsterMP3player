@@ -9,7 +9,7 @@ import javafx.scene.media.MediaPlayer;
 public class Mp3player extends MediaLib implements MediaPlayerHandler{
 	private MediaPlayer mediaPlayer = null;
 
-	public void playing(String text, File file) {
+	public void playing(String text, File file) { //possibly add throw to cycle to next song in list on error
 
 		Media media = null;
 		try {

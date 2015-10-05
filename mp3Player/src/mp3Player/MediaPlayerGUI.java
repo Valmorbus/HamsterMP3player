@@ -27,6 +27,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.input.TransferMode;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -54,13 +55,14 @@ public class MediaPlayerGUI extends Application {
 	@Override
 	public void start(Stage primaryStage) {
 		listOfSongs.addAll(mp.readLib());
-		Group root = new Group();
-		Scene scene = new Scene(root);
+		//Group root = new Group();
+		
 		HBox hbox = new HBox();
 		playButton = new Button("Play");
 		playButton.setId("play"); 
 		iv.setImage(image);
-		
+		BorderPane root = new BorderPane();
+		Scene scene = new Scene(root);
 		
 		
 		playButton.setOnAction(new EventHandler<ActionEvent>() {
@@ -89,15 +91,21 @@ public class MediaPlayerGUI extends Application {
 		
 		ListView<String> list = playList();
 		list.setId("list");
-		HBox menuHbox = new HBox();
+		
 		
 
 		MenuBar menuBar = menu(primaryStage);
-		menuHbox.getChildren().add(menuBar);
-		hbox.getChildren().addAll(menuBar, iv, playButton, stopButton);
-		//hbox.getChildren().add(list);
-		root.getChildren().addAll(menuHbox,hbox);
-		root.setAutoSizeChildren(true);
+		menuBar.prefWidthProperty().bind(primaryStage.widthProperty());
+		
+		root.setTop(menuBar);
+		hbox.getChildren().addAll(iv, playButton, stopButton);
+		root.setBottom(hbox);
+		
+		//HBox menuHbox = new HBox();
+		//menuHbox.getChildren().add(menuBar);
+//hbox.getChildren().add(list);
+		//root.getChildren().add(hbox);
+		//root.setAutoSizeChildren(true);
 		
 		
 		
@@ -129,13 +137,7 @@ public class MediaPlayerGUI extends Application {
 		primaryStage.show();
 		
 		//playList to be added in own window after file chooser choice
-		
-
-		
-		
-
 	}
-
 	/**
 	 * Menu for ...
 	 * 
