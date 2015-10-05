@@ -5,6 +5,8 @@ import java.net.URL;
 import java.util.ArrayList;
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.beans.binding.Bindings;
+import javafx.beans.property.DoubleProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -29,6 +31,7 @@ import javafx.scene.input.KeyCombination;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.media.MediaView;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
@@ -47,6 +50,8 @@ public class MediaPlayerGUI extends Application {
 	private ImageView iv = new ImageView();
 	private Button playButton = new Button("Play");
 	private Stage stage = null;
+	private MediaView mediaView = null;
+	
 
 	public static void main(String[] args) {
 		launch(args);
@@ -65,16 +70,23 @@ public class MediaPlayerGUI extends Application {
 		Scene scene = new Scene(root);
 		
 		
+		
 		playButton.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent e) {
 				textOnButton = (playButton.getText().equals("Play")) ? "Pause" : "Play";
 				playButton.setText(textOnButton);
+				if (songfile.getName().contains(".mp4"))
+					mediaViewer();
+				
 				mp.playing(textOnButton, songfile);
+				
+				
 				if (textOnButton.equals("Play"))
 					iv.setImage(image);
 				else
 					iv.setImage(image2);
+				
 			}
 		});
 		Button stopButton = new Button("Stop");
@@ -210,8 +222,11 @@ public class MediaPlayerGUI extends Application {
 					songfile = mp.fetch(new_val);
 					mp.stop();
 					mp = new Mp3player();
+					
 					playButton.setText("Pause");
 					mp.playing("Pause", songfile);
+					if (songfile.getName().contains(".mp4"))
+						mediaViewer();
 					iv.setImage(image2);
 				});
 
@@ -289,6 +304,38 @@ public class MediaPlayerGUI extends Application {
 			stage.close();
 			stage = null;
 			}
+	}
+	private void mediaViewer()
+	{
+		
+			if (mediaView == null)
+			{
+			mediaView = new MediaView(mp.getMediaPlayer());
+			final DoubleProperty width = mediaView.fitWidthProperty();
+			final DoubleProperty height = mediaView.fitHeightProperty();
+			    
+			width.bind(Bindings.selectDouble(mediaView.sceneProperty(), "width"));
+			height.bind(Bindings.selectDouble(mediaView.sceneProperty(), "height"));
+			
+			mediaView.setPreserveRatio(true);
+			mediaView.setVisible(true);
+			Group root3 = new Group();
+			root3.getChildren().add(mediaView);
+			Stage secondStage = new Stage();
+			Scene scene3 = new Scene(root3);
+			secondStage.setHeight(600);
+			secondStage.setWidth(900);
+			secondStage.setScene(scene3);
+			secondStage.setResizable(true);
+			//secondStage.setFullScreen(true);
+			secondStage.show();
+		}
+			else 
+			{
+				mp.stop();
+				//mediaView.setEventDispatcher(value);
+			}
+				
 	}
 
 }
