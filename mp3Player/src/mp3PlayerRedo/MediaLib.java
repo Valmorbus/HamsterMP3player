@@ -1,4 +1,4 @@
-package mp3Player;
+package mp3PlayerRedo;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -11,8 +11,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class MediaLib {
-	private HashMap<String, String> adressName = new HashMap<String, String>();
-	protected File file = new File("Data/mediaLib.dat");
+	//private HashMap<String, String> adressName = new HashMap<String, String>();
+	private File file = new File("Data/mediaLib.dat");
 	private String temp = null;
 
 	protected File fetch(String name) {
@@ -60,6 +60,7 @@ public class MediaLib {
 
 	protected void SaveFile(ArrayList<String> content, File file) {
 		try {
+			//file.delete();
 			FileWriter fileWriter = null;
 			fileWriter = new FileWriter(file);
 			for (String s : content)
@@ -69,8 +70,9 @@ public class MediaLib {
 
 		}
 	}
-
+	
+	/*
 	public void addToLib(String path, String name) {
 		adressName.put(path, name);
-	}
+	}*/
 }

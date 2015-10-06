@@ -1,12 +1,10 @@
 package mp3Player;
 
 import java.io.File;
-import java.net.URL;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.beans.binding.Bindings;
-import javafx.beans.property.DoubleProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -45,13 +43,11 @@ public class MediaPlayerGUI extends Application {
 	private Image image2 = new Image(file.toURI().toString());
 	private ListView<String> list = new ListView<String>();
 	private ArrayList<String> listOfSongs = new ArrayList<String>();
-	private File save = new File("Data/mediaLib.txt");
+	private File save = new File("Data/mediaLib.dat");
 	private String textOnButton = "Play";
 	private ImageView iv = new ImageView();
 	private Button playButton = new Button("Play");
 	private Stage stage = null;
-	private MediaView mediaView = null;
-	
 
 	public static void main(String[] args) {
 		launch(args);
@@ -60,33 +56,31 @@ public class MediaPlayerGUI extends Application {
 	@Override
 	public void start(Stage primaryStage) {
 		listOfSongs.addAll(mp.readLib());
-		//Group root = new Group();
-		
+		// Group root = new Group();
 		HBox hbox = new HBox();
 		playButton = new Button("Play");
-		playButton.setId("play"); 
+		playButton.setId("play");
 		iv.setImage(image);
 		BorderPane root = new BorderPane();
 		Scene scene = new Scene(root);
-		
-		
-		
+
 		playButton.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent e) {
 				textOnButton = (playButton.getText().equals("Play")) ? "Pause" : "Play";
 				playButton.setText(textOnButton);
-				if (songfile.getName().contains(".mp4"))
-					mediaViewer();
-				
-				mp.playing(textOnButton, songfile);
-				
-				
+				try {
+					mp.playing(textOnButton, songfile);
+				} catch (FileNotFoundException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+
 				if (textOnButton.equals("Play"))
 					iv.setImage(image);
 				else
 					iv.setImage(image2);
-				
+
 			}
 		});
 		Button stopButton = new Button("Stop");
@@ -100,28 +94,17 @@ public class MediaPlayerGUI extends Application {
 				iv.setImage(image);
 			}
 		});
-		
+
 		ListView<String> list = playList();
 		list.setId("list");
-		
-		
 
 		MenuBar menuBar = menu(primaryStage);
 		menuBar.prefWidthProperty().bind(primaryStage.widthProperty());
-		
+
 		root.setTop(menuBar);
 		hbox.getChildren().addAll(iv, playButton, stopButton);
 		root.setBottom(hbox);
-		
-		//HBox menuHbox = new HBox();
-		//menuHbox.getChildren().add(menuBar);
-//hbox.getChildren().add(list);
-		//root.getChildren().add(hbox);
-		//root.setAutoSizeChildren(true);
-		
-		
-		
-        
+
 		scene.setOnDragOver(new EventHandler<DragEvent>() {
 			@Override
 			public void handle(DragEvent event) {
@@ -140,16 +123,17 @@ public class MediaPlayerGUI extends Application {
 			}
 		});
 		layout(scene);
-		
+
 		primaryStage.setTitle("mp3 player");
 		primaryStage.setWidth(480);
 		primaryStage.setHeight(170);
 		primaryStage.sizeToScene();
 		primaryStage.setScene(scene);
 		primaryStage.show();
-		
-		//playList to be added in own window after file chooser choice
+
+		// playList to be added in own window after file chooser choice
 	}
+
 	/**
 	 * Menu for ...
 	 * 
@@ -167,9 +151,8 @@ public class MediaPlayerGUI extends Application {
 			public void handle(ActionEvent event) {
 				FileChooser fileChooser = new FileChooser();
 				fileChooser.setTitle("Save playlist");
-				FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("TXT files (*.txt)", "*.txt");
-				fileChooser.getExtensionFilters().add(extFilter);
-
+				//FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("TXT files (*.txt)", "*.txt");
+				//fileChooser.getExtensionFilters().add(extFilter);
 				Platform.exit();
 			}
 		});
@@ -193,16 +176,14 @@ public class MediaPlayerGUI extends Application {
 		playList.setSelected(false);
 		playList.setOnAction(new EventHandler<ActionEvent>() {
 			public void handle(ActionEvent event) {
-				//playList.setSelected(true);
-				
-				if(playList.isSelected())
+				// playList.setSelected(true);
+				if (playList.isSelected())
 					playListWindow(stage);
-				
-				else{
+
+				else {
 					playList.setSelected(false);
 					closePlayListWindow();
 				}
-					
 			}
 		});
 
@@ -218,15 +199,16 @@ public class MediaPlayerGUI extends Application {
 		list.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
 		list.getSelectionModel().selectedItemProperty()
 				.addListener((ObservableValue<? extends String> ov, String old_val, String new_val) -> {
-					// System.out.println("häer" + new_val);
 					songfile = mp.fetch(new_val);
 					mp.stop();
 					mp = new Mp3player();
-					
 					playButton.setText("Pause");
-					mp.playing("Pause", songfile);
-					if (songfile.getName().contains(".mp4"))
-						mediaViewer();
+					try {
+						mp.playing("Pause", songfile);
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 					iv.setImage(image2);
 				});
 
@@ -270,22 +252,20 @@ public class MediaPlayerGUI extends Application {
 		event.consume();
 
 	}
-	private void layout(Scene scene)
-	{
+
+	private void layout(Scene scene) {
 		String css = MediaPlayerGUI.class.getResource("MediaPlayerGUI.css").toExternalForm();
-        scene.getStylesheets().clear();
-        scene.getStylesheets().add(css);
-        
-        
+		scene.getStylesheets().clear();
+		scene.getStylesheets().add(css);
+
 	}
-	
-	private void playListWindow(Stage primaryStage)
-	{
+
+	private void playListWindow(Stage primaryStage) {
 		Scene secondscene = null;
 		Group secondroot = new Group();
-		
+
 		if (secondscene == null)
-		secondscene = new Scene(secondroot);	
+			secondscene = new Scene(secondroot);
 		secondroot.getChildren().add(list);
 		secondroot.autosize();
 		if (stage == null)
@@ -294,48 +274,53 @@ public class MediaPlayerGUI extends Application {
 		stage.sizeToScene();
 		stage.setScene(secondscene);
 		stage.setWidth(200);
-		//stage.setScene(scene);
+		// stage.setScene(scene);
 		stage.show();
-		//return stage;
+		// return stage;
 	}
-	private void closePlayListWindow()
-	{
-		if (stage != null){
+
+	private void closePlayListWindow() {
+		if (stage != null) {
 			stage.close();
 			stage = null;
-			}
+		}
 	}
-	private void mediaViewer()
-	{
-		
-			if (mediaView == null)
-			{
+
+	/*private BorderPane mediaViewer(BorderPane pane) {
+
+		if (mediaView == null) {
 			mediaView = new MediaView(mp.getMediaPlayer());
-			final DoubleProperty width = mediaView.fitWidthProperty();
-			final DoubleProperty height = mediaView.fitHeightProperty();
-			    
-			width.bind(Bindings.selectDouble(mediaView.sceneProperty(), "width"));
-			height.bind(Bindings.selectDouble(mediaView.sceneProperty(), "height"));
-			
+			// mediaView.setMediaPlayer(mp.getMediaPlayer());
+			// final DoubleProperty width = mediaView.fitWidthProperty();
+			// final DoubleProperty height = mediaView.fitHeightProperty();
+
+			// width.bind(Bindings.selectDouble(mediaView.sceneProperty(),
+			// "width"));
+			// height.bind(Bindings.selectDouble(mediaView.sceneProperty(),
+			// "height"));
+
 			mediaView.setPreserveRatio(true);
 			mediaView.setVisible(true);
-			Group root3 = new Group();
-			root3.getChildren().add(mediaView);
-			Stage secondStage = new Stage();
-			Scene scene3 = new Scene(root3);
-			secondStage.setHeight(600);
-			secondStage.setWidth(900);
-			secondStage.setScene(scene3);
-			secondStage.setResizable(true);
-			//secondStage.setFullScreen(true);
-			secondStage.show();
+			pane.setTop(mediaView);
+			// Group root3 = new Group();
+			pane.getChildren().add(mediaView);
+			// Stage secondStage = new Stage();
+			// Scene scene3 = new Scene(root3);
+			// secondStage.setHeight(600);
+			// secondStage.setWidth(900);
+			// secondStage.setScene(scene3);
+			// secondStage.setResizable(true);
+			// secondStage.setFullScreen(true);
+			// secondStage.show();
+			return pane;
 		}
-			else 
-			{
-				mp.stop();
-				//mediaView.setEventDispatcher(value);
-			}
-				
-	}
+		// else
+		// {
+		// mp.stop();
+		// mediaView.setEventDispatcher(value);
+		// }
+		return pane;
+
+	}*/
 
 }

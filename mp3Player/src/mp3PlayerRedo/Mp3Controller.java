@@ -1,4 +1,4 @@
-package mp3Player;
+package mp3PlayerRedo;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -8,64 +8,64 @@ import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 
 
-public class Mp3player extends MediaLib implements MediaPlayerHandler{
+public class Mp3Controller extends Mp3PlayList implements MediaPlayerHandler{
+
+	// public Media media = null;
 	private MediaPlayer mediaPlayer = null;
+	private File file;
 
-	public void playing(String text, File file) throws FileNotFoundException{ //possibly add throw to cycle to next song in list on error
-
+	public void playing(String text) throws FileNotFoundException { 
+		// MediaPlayer mediaPlayer = null;
+		File file =  getSongfile();
 		Media media = null;
 		try {
 			URL res = file.toURI().toURL();
 			media = new Media(res.toString());
-			
+
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
 		}
 		if (mediaPlayer == null)
 			mediaPlayer = new MediaPlayer(media);
-		
+
 		if (text.equals("Play")) {
 			pause();
 		} else {
 			play();
-		}	
-		
+		}
 	}
-	@Override
+
 	public void stop() {
 		if (mediaPlayer != null)
 			mediaPlayer.stop();
 	}
 
-	@Override
 	public void play() {
 		// TODO Auto-generated method stub
 		mediaPlayer.play();
 	}
 
-	@Override
 	public void forward() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
-	@Override
 	public void reverse() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
-	@Override
 	public void pause() {
 		mediaPlayer.pause();
-		
-	}
-	public MediaPlayer getMediaPlayer() {
-		return this.mediaPlayer;
+
 	}
 
-	public void setMediaPlayer(MediaPlayer mediaPlayer) {
-		this.mediaPlayer = mediaPlayer;
+	public Media getMedia(File fil) throws MalformedURLException {
+		
+		URL res = fil.toURI().toURL();
+		Media media = new Media(res.toString());
+		
+		return media;
 	}
 
 }
