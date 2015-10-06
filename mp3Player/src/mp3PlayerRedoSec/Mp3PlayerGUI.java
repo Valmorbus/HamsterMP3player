@@ -2,27 +2,37 @@ package mp3PlayerRedoSec;
 
 import java.io.File;
 import java.net.MalformedURLException;
+import java.util.ArrayList;
 
 import org.omg.Messaging.SyncScopeHelper;
 
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ListView;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.RadioMenuItem;
+import javafx.scene.control.SelectionMode;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.DragEvent;
+import javafx.scene.input.Dragboard;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.input.TransferMode;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.media.Media;
@@ -37,6 +47,12 @@ public class Mp3PlayerGUI extends Application {
 	File file = new File("Data/big_buck_bunny.mp4");
 	String play = "Play";
 	MediaPlayer mPlayer;
+	MediaView mview;
+	private ListView<String> list = new ListView<String>();
+	private ArrayList<String> listOfSongs  =mp3.readLib();
+	private File save = new File("Data/mediaLib.dat");
+	private String defaultSong = "Data/The Hampsterdance Song.mp3";
+	private File songfile = new File(defaultSong);
 	
 	public static void main(String[] args) {
 		launch(args);
@@ -50,10 +66,10 @@ public class Mp3PlayerGUI extends Application {
 		
 		primaryStage.setTitle("Media Player!");
 		primaryStage.setScene(scene);
+		primaryStage.sizeToScene();
 		primaryStage.show();
 		
-		
-		
+				
 	}
 	private Scene setScene(Stage stage)
 	{
@@ -65,30 +81,40 @@ public class Mp3PlayerGUI extends Application {
 			e.printStackTrace();
 		}
 		mPlayer = new MediaPlayer(media);
-		MediaView mview = new MediaView(mPlayer);
+		mview = new MediaView(mPlayer);
 		
 		BorderPane borderPane = new BorderPane();
 		borderPane.setCenter(mview);
 		borderPane.setBottom(toolBar());
-		
+		ListView<String> list = playList();
+		list.setId("list");
+		borderPane.setRight(list);
+		list.setOnDragOver(new EventHandler<DragEvent>() {
+			@Override
+			public void handle(DragEvent event) {
+				Dragboard db = event.getDragboard();
+				if (db.hasFiles()) {
+					event.acceptTransferModes(TransferMode.COPY);
+				} else {
+					event.consume();
+				}
+			}
+		});
+		list.setOnDragDropped(new EventHandler<DragEvent>() {
+			@Override
+			public void handle(DragEvent event) {
+				dragDroppedList(event);
+			}
+		});
+			
 		MenuBar menuBar = menu(stage);
 		menuBar.prefWidthProperty().bind(borderPane.widthProperty());
 		borderPane.setTop(menuBar);
 		
 		mPlayer.setAutoPlay(false);
-		Scene scene = new Scene(borderPane, 600, 600);
+		Scene scene = new Scene(borderPane, 900, 600);
 		scene.setFill(Color.BLACK);
 		
-		
-		
-		/*if (mp3.isSelected()){
-			try {
-				mPlayer = new MediaPlayer(mp3.getMedia(file));
-			} catch (MalformedURLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}*/
 		
 		return scene;
 	}
@@ -128,11 +154,11 @@ public class Mp3PlayerGUI extends Application {
 			public void handle(ActionEvent event) {
 				FileChooser fileChooser = new FileChooser();
 				fileChooser.setTitle("Open Resource File");
-				mp3.setSongfile(fileChooser.showOpenDialog(stage));
+				songfile = fileChooser.showOpenDialog(stage);
 				// String name = songfile.getName();
-				mp3.saveToList(mp3.getSongfile().getAbsolutePath());
-				mp3.SaveFile(mp3.getListOfSongs(), mp3.getSave());
-				mp3.setList(mp3.playList());
+				saveToList(songfile.getAbsolutePath());
+				mp3.SaveFile(listOfSongs, save);
+				list =  playList();
 			}
 		});
 		RadioMenuItem playList = new RadioMenuItem("Playlist", null);
@@ -143,11 +169,10 @@ public class Mp3PlayerGUI extends Application {
 			public void handle(ActionEvent event) {
 				// playList.setSelected(true);
 				if (playList.isSelected())
-					mp3.playListWindow();
+					list.setVisible(true);
 
 				else {
-					playList.setSelected(false);
-					mp3.closePlayListWindow();
+					list.setVisible(false);
 				}
 			}
 		});
@@ -195,20 +220,93 @@ public class Mp3PlayerGUI extends Application {
 		});
 		return stopButton;
 	}
-	/*private File getNewMedia()
-	{
-		if (mp3.getList().getSelectionModel().getSelectedItem() != null)
-		{
-		String path= mp3.getList().getSelectionModel().getSelectedItem();
-		file = mp3.fetch(path);
-		}
-	else 
-		file = null;
-		
-		return file;
-	}*/
+	private ListView<String> playList() {
+		ObservableList<String> items = FXCollections.observableArrayList(getOnlyName());
+		list.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+		list.getSelectionModel().selectedItemProperty()
+				.addListener((ObservableValue<? extends String> ov, String old_val, String new_val) -> {
+					songfile = mp3.fetch(new_val);
+					Media pickedMedia = null;;
+					try {
+						pickedMedia = mp3.getMedia(songfile);
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} 
+					mPlayer = new MediaPlayer(pickedMedia);
+					mview.setMediaPlayer(mPlayer);
+					
+				});
 
-}
+		list.setItems(items);
+		return list;
+	}
+	
+	private ArrayList<String> getOnlyName() {
+		listOfSongs = mp3.readLib();
+		ArrayList<String> tempList = new ArrayList<String>();
+		for (String s : listOfSongs) {
+			File userFile = new File(s);
+			String filename = userFile.getName();
+			tempList.add(filename);
+		}
+		return tempList;
+	}
+
+	public void saveToList(String s) {
+		listOfSongs.add(s);
+	}
+	
+	private void dragDroppedList(final DragEvent event) {
+		Dragboard db = event.getDragboard();
+		boolean success = false;
+		if (db.hasFiles()) {
+			success = true;
+			String filePath = null;
+			for (File file : db.getFiles()) {
+				filePath = file.getAbsolutePath();
+				System.out.println(filePath);
+				songfile = file;
+				saveToList(songfile.getAbsolutePath());
+				mp3.SaveFile(listOfSongs, save);
+				list = playList();
+			}
+		}
+		event.setDropCompleted(success);
+		event.consume();
+	
+	}
+	/*
+	public void playListWindow() {
+		
+		Scene scene = null;
+		Group secondroot = new Group();
+		list = playList();
+		//if (scene == null)
+		scene = new Scene(secondroot);
+		secondroot.getChildren().add(list);
+		secondroot.autosize();
+		//stage.initOwner(primaryStage);
+		scene.setOnDragOver(new EventHandler<DragEvent>() {
+			@Override
+			public void handle(DragEvent event) {
+				Dragboard db = event.getDragboard();
+				if (db.hasFiles()) {
+					event.acceptTransferModes(TransferMode.COPY);
+				} else {
+					event.consume();
+				}
+			}
+		});
+		scene.setOnDragDropped(new EventHandler<DragEvent>() {
+			@Override
+			public void handle(DragEvent event) {
+				dragDroppedList(event);
+			}
+		});*/
+	}
+
+
 
 
 

@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class MediaLib {
-	private HashMap<String, String> adressName = new HashMap<String, String>();
+	//private HashMap<String, String> adressName = new HashMap<String, String>();
 	protected File file = new File("Data/mediaLib.dat");
 	private String temp = null;
 
@@ -69,8 +69,8 @@ public class MediaLib {
 
 		}
 	}
-
+/*
 	public void addToLib(String path, String name) {
 		adressName.put(path, name);
-	}
+	}*/
 }

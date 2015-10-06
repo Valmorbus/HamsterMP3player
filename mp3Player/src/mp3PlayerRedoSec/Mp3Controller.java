@@ -7,15 +7,15 @@ import java.net.URL;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 
-public class Mp3Controller extends Mp3PlayList implements MediaPlayerHandler {
+public class Mp3Controller extends MediaLib implements MediaPlayerHandler {
 
 	// public Media media = null;
 	private MediaPlayer mediaPlayer = null;
-	private File file;
+	//private File file;
 
-	public void playing(String text) throws FileNotFoundException {
+	public void playing(String text, File file) throws FileNotFoundException {
 		// MediaPlayer mediaPlayer = null;
-		File file = getSongfile();
+		
 		Media media = null;
 		try {
 			URL res = file.toURI().toURL();
@@ -66,7 +66,7 @@ public class Mp3Controller extends Mp3PlayList implements MediaPlayerHandler {
 
 		return media;
 	}
-
+	/*
 	public Media getNewMedia() {
 		Media media = null;
 		if (getList().getSelectionModel().getSelectedItem() != null) {
@@ -82,6 +82,6 @@ public class Mp3Controller extends Mp3PlayList implements MediaPlayerHandler {
 			file = null;
 
 		return media;
-	}
+	}*/
 
 }
