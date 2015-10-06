@@ -7,16 +7,15 @@ import java.net.URL;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 
-
-public class Mp3Controller extends Mp3PlayList implements MediaPlayerHandler{
+public class Mp3Controller extends Mp3PlayList implements MediaPlayerHandler {
 
 	// public Media media = null;
 	private MediaPlayer mediaPlayer = null;
 	private File file;
 
-	public void playing(String text) throws FileNotFoundException { 
+	public void playing(String text) throws FileNotFoundException {
 		// MediaPlayer mediaPlayer = null;
-		File file =  getSongfile();
+		File file = getSongfile();
 		Media media = null;
 		try {
 			URL res = file.toURI().toURL();
@@ -61,10 +60,27 @@ public class Mp3Controller extends Mp3PlayList implements MediaPlayerHandler{
 	}
 
 	public Media getMedia(File fil) throws MalformedURLException {
-		
+
 		URL res = fil.toURI().toURL();
 		Media media = new Media(res.toString());
-		
+
+		return media;
+	}
+
+	public Media getNewMedia() {
+		Media media = null;
+		if (getList().getSelectionModel().getSelectedItem() != null) {
+			String path = getList().getSelectionModel().getSelectedItem();
+			file = fetch(path);
+			try {
+				media = getMedia(file);
+			} catch (MalformedURLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		} else
+			file = null;
+
 		return media;
 	}
 

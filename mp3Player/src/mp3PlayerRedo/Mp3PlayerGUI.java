@@ -2,7 +2,6 @@ package mp3PlayerRedo;
 
 import java.io.File;
 import java.net.MalformedURLException;
-import java.net.URL;
 
 import org.omg.Messaging.SyncScopeHelper;
 
@@ -45,8 +44,10 @@ public class Mp3PlayerGUI extends Application {
 
 	@Override
 	public void start(Stage primaryStage) {
+	
 		
 		Scene scene = setScene(primaryStage);
+		
 		primaryStage.setTitle("Media Player!");
 		primaryStage.setScene(scene);
 		primaryStage.show();
@@ -77,6 +78,8 @@ public class Mp3PlayerGUI extends Application {
 		mPlayer.setAutoPlay(false);
 		Scene scene = new Scene(borderPane, 600, 600);
 		scene.setFill(Color.BLACK);
+		
+		
 		
 		/*if (mp3.isSelected()){
 			try {
@@ -192,7 +195,7 @@ public class Mp3PlayerGUI extends Application {
 		});
 		return stopButton;
 	}
-	private File getNewMedia()
+	/*private File getNewMedia()
 	{
 		if (mp3.getList().getSelectionModel().getSelectedItem() != null)
 		{
@@ -203,6 +206,11 @@ public class Mp3PlayerGUI extends Application {
 		file = null;
 		
 		return file;
-	}
+	}*/
 
 }
+
+
+
+
+

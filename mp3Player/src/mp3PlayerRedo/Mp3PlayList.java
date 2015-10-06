@@ -30,6 +30,7 @@ public class Mp3PlayList extends MediaLib{
 		list.getSelectionModel().selectedItemProperty()
 				.addListener((ObservableValue<? extends String> ov, String old_val, String new_val) -> {
 					songfile = fetch(new_val);
+					
 
 				});
 

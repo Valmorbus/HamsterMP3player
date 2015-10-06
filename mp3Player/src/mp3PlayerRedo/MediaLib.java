@@ -10,7 +10,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class MediaLib {
+public abstract class MediaLib {
 	//private HashMap<String, String> adressName = new HashMap<String, String>();
 	private File file = new File("Data/mediaLib.dat");
 	private String temp = null;
