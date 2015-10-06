@@ -56,6 +56,17 @@ public class Mp3PlayerGUI extends Application {
 	private File mediaFile = new File(defaultFileString);
 	private BorderPane borderPane;
 	
+	
+	/*
+	 * todo: 
+	 * https://gist.github.com/jewelsea/7821196
+	 * 
+	 * kolla grafiken till denna
+	 * http://www.java2s.com/Code/Java/JavaFX/Draggablepanel.htm
+	 */
+	
+	
+	
 	public static void main(String[] args) {
 		launch(args);
 	}
@@ -114,7 +125,6 @@ public class Mp3PlayerGUI extends Application {
 		mPlayer.setAutoPlay(false);
 		Scene scene = new Scene(borderPane, 900, 600);
 		scene.setFill(Color.BLACK);
-		
 		
 		return scene;
 	}
