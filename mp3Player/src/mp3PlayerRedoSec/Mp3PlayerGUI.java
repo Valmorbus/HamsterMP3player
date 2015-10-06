@@ -44,15 +44,15 @@ import javafx.stage.Stage;
 
 public class Mp3PlayerGUI extends Application {
 	Mp3Controller mp3 = new Mp3Controller();
-	File file = new File("Data/big_buck_bunny.mp4");
+	File defaultFile = new File("Data/big_buck_bunny.mp4");
 	String play = "Play";
 	MediaPlayer mPlayer;
 	MediaView mview;
 	private ListView<String> list = new ListView<String>();
 	private ArrayList<String> listOfSongs  =mp3.readLib();
 	private File save = new File("Data/mediaLib.dat");
-	private String defaultSong = "Data/The Hampsterdance Song.mp3";
-	private File songfile = new File(defaultSong);
+	private String defaultFileString = "Data/big_buck_bunny.mp4";
+	private File mediaFile = new File(defaultFileString);
 	
 	public static void main(String[] args) {
 		launch(args);
@@ -75,7 +75,7 @@ public class Mp3PlayerGUI extends Application {
 	{
 		Media media = null;
 		try {
-			media = mp3.getMedia(file);
+			media = mp3.getMedia(defaultFile);
 		} catch (MalformedURLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -154,9 +154,9 @@ public class Mp3PlayerGUI extends Application {
 			public void handle(ActionEvent event) {
 				FileChooser fileChooser = new FileChooser();
 				fileChooser.setTitle("Open Resource File");
-				songfile = fileChooser.showOpenDialog(stage);
+				mediaFile = fileChooser.showOpenDialog(stage);
 				// String name = songfile.getName();
-				saveToList(songfile.getAbsolutePath());
+				saveToList(mediaFile.getAbsolutePath());
 				mp3.SaveFile(listOfSongs, save);
 				list =  playList();
 			}
@@ -225,10 +225,10 @@ public class Mp3PlayerGUI extends Application {
 		list.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
 		list.getSelectionModel().selectedItemProperty()
 				.addListener((ObservableValue<? extends String> ov, String old_val, String new_val) -> {
-					songfile = mp3.fetch(new_val);
+					mediaFile = mp3.fetch(new_val);
 					Media pickedMedia = null;;
 					try {
-						pickedMedia = mp3.getMedia(songfile);
+						pickedMedia = mp3.getMedia(mediaFile);
 					} catch (Exception e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -268,8 +268,8 @@ public class Mp3PlayerGUI extends Application {
 			for (File file : db.getFiles()) {
 				filePath = file.getAbsolutePath();
 				System.out.println(filePath);
-				songfile = file;
-				saveToList(songfile.getAbsolutePath());
+				mediaFile = file;
+				saveToList(mediaFile.getAbsolutePath());
 				mp3.SaveFile(listOfSongs, save);
 				list = playList();
 			}
