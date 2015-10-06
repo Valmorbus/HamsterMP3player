@@ -60,10 +60,10 @@ public class Mp3Controller extends MediaLib implements MediaPlayerHandler {
 	}
 
 	public Media getMedia(File fil) throws MalformedURLException {
-
+		Media media = null;
 		URL res = fil.toURI().toURL();
-		Media media = new Media(res.toString());
-
+		media = new Media(res.toString());
+		
 		return media;
 	}
 	/*

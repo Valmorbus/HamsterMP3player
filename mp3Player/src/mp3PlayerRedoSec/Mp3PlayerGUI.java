@@ -39,6 +39,7 @@ import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
 import javafx.scene.paint.Color;
+import javafx.scene.transform.Translate;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
@@ -53,22 +54,20 @@ public class Mp3PlayerGUI extends Application {
 	private File save = new File("Data/mediaLib.dat");
 	private String defaultFileString = "Data/big_buck_bunny.mp4";
 	private File mediaFile = new File(defaultFileString);
+	private BorderPane borderPane;
 	
 	public static void main(String[] args) {
 		launch(args);
 	}
 
 	@Override
-	public void start(Stage primaryStage) {
-	
-		
+	public void start(Stage primaryStage) {	
 		Scene scene = setScene(primaryStage);
 		
 		primaryStage.setTitle("Media Player!");
 		primaryStage.setScene(scene);
 		primaryStage.sizeToScene();
-		primaryStage.show();
-		
+		primaryStage.show();	
 				
 	}
 	private Scene setScene(Stage stage)
@@ -82,9 +81,10 @@ public class Mp3PlayerGUI extends Application {
 		}
 		mPlayer = new MediaPlayer(media);
 		mview = new MediaView(mPlayer);
-		
-		BorderPane borderPane = new BorderPane();
+		mview.isResizable();
+		borderPane = new BorderPane();
 		borderPane.setCenter(mview);
+
 		borderPane.setBottom(toolBar());
 		ListView<String> list = playList();
 		list.setId("list");
@@ -164,15 +164,19 @@ public class Mp3PlayerGUI extends Application {
 		RadioMenuItem playList = new RadioMenuItem("Playlist", null);
 		playList.setMnemonicParsing(true);
 		playList.setAccelerator(new KeyCodeCombination(KeyCode.P, KeyCombination.CONTROL_DOWN));
-		playList.setSelected(false);
+		playList.setSelected(true);
 		playList.setOnAction(new EventHandler<ActionEvent>() {
 			public void handle(ActionEvent event) {
 				// playList.setSelected(true);
 				if (playList.isSelected())
+					{
 					list.setVisible(true);
-
+					}
 				else {
 					list.setVisible(false);
+				
+					
+					
 				}
 			}
 		});
@@ -227,12 +231,13 @@ public class Mp3PlayerGUI extends Application {
 				.addListener((ObservableValue<? extends String> ov, String old_val, String new_val) -> {
 					mediaFile = mp3.fetch(new_val);
 					Media pickedMedia = null;;
+				
 					try {
 						pickedMedia = mp3.getMedia(mediaFile);
 					} catch (Exception e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
-					} 
+					}
 					mPlayer.stop();
 					mPlayer = new MediaPlayer(pickedMedia);
 					mview.setMediaPlayer(mPlayer);
