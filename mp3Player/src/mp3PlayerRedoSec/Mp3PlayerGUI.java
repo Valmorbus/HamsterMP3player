@@ -233,8 +233,10 @@ public class Mp3PlayerGUI extends Application {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					} 
+					mPlayer.stop();
 					mPlayer = new MediaPlayer(pickedMedia);
 					mview.setMediaPlayer(mPlayer);
+					mPlayer.play();
 					
 				});
 
