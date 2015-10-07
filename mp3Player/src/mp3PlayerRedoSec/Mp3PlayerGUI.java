@@ -6,16 +6,20 @@ import java.util.ArrayList;
 
 import org.omg.Messaging.SyncScopeHelper;
 
+import com.sun.javafx.application.PlatformImpl;
+
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
@@ -42,47 +46,49 @@ import javafx.scene.paint.Color;
 import javafx.scene.transform.Translate;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
+import javafx.stage.Window;
+import javafx.stage.WindowEvent;
 
 public class Mp3PlayerGUI extends Application {
-	Mp3Controller mp3 = new Mp3Controller();
-	File defaultFile = new File("Data/big_buck_bunny.mp4");
-	String play = "Play";
-	MediaPlayer mPlayer;
-	MediaView mview;
+	private Mp3Controller mp3 = new Mp3Controller();
+	private File defaultFile = new File("Data/big_buck_bunny.mp4");
+	// private String play = "Play";
+	private MediaPlayer mPlayer;
+	private MediaView mview;
 	private ListView<String> list = new ListView<String>();
-	private ArrayList<String> listOfSongs  =mp3.readLib();
+	private ArrayList<String> listOfSongs = mp3.readLib();
 	private File save = new File("Data/mediaLib.dat");
 	private String defaultFileString = "Data/big_buck_bunny.mp4";
 	private File mediaFile = new File(defaultFileString);
 	private BorderPane borderPane;
 	
-	
+
 	/*
-	 * todo: 
-	 * https://gist.github.com/jewelsea/7821196
+	 * todo: https://gist.github.com/jewelsea/7821196
 	 * 
 	 * kolla grafiken till denna
 	 * http://www.java2s.com/Code/Java/JavaFX/Draggablepanel.htm
+	 * 
+	 * make playlist choice
 	 */
-	
-	
-	
+
 	public static void main(String[] args) {
 		launch(args);
 	}
 
 	@Override
-	public void start(Stage primaryStage) {	
+	public void start(Stage primaryStage) {
 		Scene scene = setScene(primaryStage);
-		
+		//primaryStage.initStyle(StageStyle.UNDECORATED);
 		primaryStage.setTitle("Media Player!");
 		primaryStage.setScene(scene);
 		primaryStage.sizeToScene();
-		primaryStage.show();	
-				
+		primaryStage.show();
+
 	}
-	private Scene setScene(Stage stage)
-	{
+
+	private Scene setScene(Stage stage) {
 		Media media = null;
 		try {
 			media = mp3.getMedia(defaultFile);
@@ -93,10 +99,37 @@ public class Mp3PlayerGUI extends Application {
 		mPlayer = new MediaPlayer(media);
 		mview = new MediaView(mPlayer);
 		mview.isResizable();
+		mview.fitHeightProperty();
+		mview.fitWidthProperty();
+		mview.setOnDragOver(new EventHandler<DragEvent>() {
+			@Override
+			public void handle(DragEvent event) {
+				Dragboard db = event.getDragboard();
+				if (db.hasFiles()) {
+					event.acceptTransferModes(TransferMode.COPY);
+				} else {
+					event.consume();
+				}
+			}
+		});
+		mview.setOnDragDropped(new EventHandler<DragEvent>() {
+			@Override
+			public void handle(DragEvent event) {
+				try {
+					dragDropped(event);
+				} catch (MalformedURLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+
+			}
+		});
+
 		borderPane = new BorderPane();
 		borderPane.setCenter(mview);
 
 		borderPane.setBottom(toolBar());
+
 		ListView<String> list = playList();
 		list.setId("list");
 		borderPane.setRight(list);
@@ -117,15 +150,15 @@ public class Mp3PlayerGUI extends Application {
 				dragDroppedList(event);
 			}
 		});
-			
+
 		MenuBar menuBar = menu(stage);
 		menuBar.prefWidthProperty().bind(borderPane.widthProperty());
 		borderPane.setTop(menuBar);
-		
+
 		mPlayer.setAutoPlay(false);
 		Scene scene = new Scene(borderPane, 900, 600);
 		scene.setFill(Color.BLACK);
-		
+
 		return scene;
 	}
 
@@ -136,9 +169,10 @@ public class Mp3PlayerGUI extends Application {
 		hToolBar.alignmentProperty().isBound();
 		hToolBar.setSpacing(5);
 		hToolBar.setStyle("-fx-background-color: Black");
-		hToolBar.getChildren().addAll(stopButton(),playButton());
+		hToolBar.getChildren().addAll(stopButton(), playButton());
 		return hToolBar;
 	}
+
 	private MenuBar menu(Stage stage) {
 		MenuBar menuBar = new MenuBar();
 		Menu menuFile = new Menu("File");
@@ -168,7 +202,7 @@ public class Mp3PlayerGUI extends Application {
 				// String name = songfile.getName();
 				saveToList(mediaFile.getAbsolutePath());
 				mp3.SaveFile(listOfSongs, save);
-				list =  playList();
+				list = playList();
 			}
 		});
 		RadioMenuItem playList = new RadioMenuItem("Playlist", null);
@@ -178,22 +212,66 @@ public class Mp3PlayerGUI extends Application {
 		playList.setOnAction(new EventHandler<ActionEvent>() {
 			public void handle(ActionEvent event) {
 				// playList.setSelected(true);
-				if (playList.isSelected())
-					{
-					list.setVisible(true);
-					}
-				else {
-					list.setVisible(false);
-				
-					
-					
+				if (playList.isSelected()) {
+					// list.setVisible(true);
+					borderPane.setRight(list);
+					borderPane.setCenter(mview);
+
+				} else {
+					// list.setVisible(false);
+					borderPane.getChildren().remove(list);
+					borderPane.getCenter().autosize();
+
 				}
+			}
+		});
+		RadioMenuItem playListPlace = new RadioMenuItem("Playlist Free", null);
+		playListPlace.setMnemonicParsing(true);
+		playListPlace.setSelected(false);
+		playListPlace.setOnAction(new EventHandler<ActionEvent>() {
+			public void handle(ActionEvent event) {
+				// playList.setSelected(true);
+				
+				Stage stage = new Stage(StageStyle.TRANSPARENT); 
+				BorderPane bp = new BorderPane();
+				Scene scene = new Scene(bp);
+				stage.setScene(scene);	
+				//stage.setOpacity(0.0);
+				stage.show();
+				
+				// work here
+				
+				if (playListPlace.isSelected()) {
+					playListPlace.setSelected(true);
+					borderPane.getChildren().remove(list);
+					borderPane.getCenter().autosize();
+				//	bp.setLeft(list);
+					stage.setTitle("Playlist");
+					stage.setOpacity(1.0);
+					stage.sizeToScene();
+					stage.setResizable(false);
+					stage.show();
+					
+					}
+				else {	
+					
+					playListPlace.setSelected(false);
+					borderPane.setRight(list);
+					//stage.setOpacity(0.0);
+					stage.close();
+					
+					
+
+				}
+				//boolean selected = (playListPlace.isSelected())?false:true;
+				//playListPlace.setSelected(selected);
 			}
 		});
 
 		menuFile.getItems().add(openItem);
 		menuFile.getItems().add(exitItem);
 		menuView.getItems().add(playList);
+		menuView.getItems().add(playListPlace);
 		menuBar.getMenus().addAll(menuFile, menuEdit, menuView);
 		return menuBar;
 	}
@@ -203,7 +281,7 @@ public class Mp3PlayerGUI extends Application {
 		Button playButton = new Button();
 		playButton.setGraphic(new ImageView(playButtonImage));
 		playButton.setStyle("-fx-background-color: Black");
-		playButton.setOnAction((ActionEvent e)->{
+		playButton.setOnAction((ActionEvent e) -> {
 			mPlayer.play();
 		});
 		playButton.addEventHandler(MouseEvent.MOUSE_ENTERED, (MouseEvent e) -> {
@@ -213,15 +291,16 @@ public class Mp3PlayerGUI extends Application {
 		playButton.addEventHandler(MouseEvent.MOUSE_EXITED, (MouseEvent e) -> {
 			playButton.setStyle("-fx-background-color: Black");
 		});
-		
+
 		return playButton;
 	}
+
 	private Button stopButton() {
 		Image stopButtonImage = new Image(new File("Data/mp3buttons/Stop.png").toURI().toString());
 		Button stopButton = new Button();
 		stopButton.setGraphic(new ImageView(stopButtonImage));
 		stopButton.setStyle("-fx-background-color: Black");
-		
+
 		stopButton.addEventHandler(MouseEvent.MOUSE_ENTERED, (MouseEvent e) -> {
 			stopButton.setStyle("-fx-background-color: Black");
 			stopButton.setStyle("-fx-body-color: Black");
@@ -229,19 +308,21 @@ public class Mp3PlayerGUI extends Application {
 		stopButton.addEventHandler(MouseEvent.MOUSE_EXITED, (MouseEvent e) -> {
 			stopButton.setStyle("-fx-background-color: Black");
 		});
-		stopButton.setOnAction((e)->{
+		stopButton.setOnAction((e) -> {
 			mPlayer.stop();
 		});
 		return stopButton;
 	}
+
 	private ListView<String> playList() {
 		ObservableList<String> items = FXCollections.observableArrayList(getOnlyName());
 		list.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
 		list.getSelectionModel().selectedItemProperty()
 				.addListener((ObservableValue<? extends String> ov, String old_val, String new_val) -> {
 					mediaFile = mp3.fetch(new_val);
-					Media pickedMedia = null;;
-				
+					Media pickedMedia = null;
+					;
+
 					try {
 						pickedMedia = mp3.getMedia(mediaFile);
 					} catch (Exception e) {
@@ -252,13 +333,13 @@ public class Mp3PlayerGUI extends Application {
 					mPlayer = new MediaPlayer(pickedMedia);
 					mview.setMediaPlayer(mPlayer);
 					mPlayer.play();
-					
+
 				});
 
 		list.setItems(items);
 		return list;
 	}
-	
+
 	private ArrayList<String> getOnlyName() {
 		listOfSongs = mp3.readLib();
 		ArrayList<String> tempList = new ArrayList<String>();
@@ -273,7 +354,7 @@ public class Mp3PlayerGUI extends Application {
 	public void saveToList(String s) {
 		listOfSongs.add(s);
 	}
-	
+
 	private void dragDroppedList(final DragEvent event) {
 		Dragboard db = event.getDragboard();
 		boolean success = false;
@@ -291,41 +372,38 @@ public class Mp3PlayerGUI extends Application {
 		}
 		event.setDropCompleted(success);
 		event.consume();
-	
+
+	}
+
+	private void dragDropped(final DragEvent event) throws MalformedURLException {
+		dragDroppedList(event);
+
+		Media DroppedMedia = mp3.getMedia(mediaFile);
+		mPlayer.stop();
+		mPlayer = new MediaPlayer(DroppedMedia);
+		mview.setMediaPlayer(mPlayer);
+		mPlayer.play();
+
+		list = playList();
+
+		event.consume();
+
 	}
 	/*
-	public void playListWindow() {
-		
-		Scene scene = null;
-		Group secondroot = new Group();
-		list = playList();
-		//if (scene == null)
-		scene = new Scene(secondroot);
-		secondroot.getChildren().add(list);
-		secondroot.autosize();
-		//stage.initOwner(primaryStage);
-		scene.setOnDragOver(new EventHandler<DragEvent>() {
-			@Override
-			public void handle(DragEvent event) {
-				Dragboard db = event.getDragboard();
-				if (db.hasFiles()) {
-					event.acceptTransferModes(TransferMode.COPY);
-				} else {
-					event.consume();
-				}
-			}
-		});
-		scene.setOnDragDropped(new EventHandler<DragEvent>() {
-			@Override
-			public void handle(DragEvent event) {
-				dragDroppedList(event);
-			}
-		});*/
-	}
-
-
-
-
-
-
-
+	 * public void playListWindow() {
+	 * 
+	 * Scene scene = null; Group secondroot = new Group(); list = playList();
+	 * //if (scene == null) scene = new Scene(secondroot);
+	 * secondroot.getChildren().add(list); secondroot.autosize();
+	 * //stage.initOwner(primaryStage); scene.setOnDragOver(new
+	 * EventHandler<DragEvent>() {
+	 * 
+	 * @Override public void handle(DragEvent event) { Dragboard db =
+	 * event.getDragboard(); if (db.hasFiles()) {
+	 * event.acceptTransferModes(TransferMode.COPY); } else { event.consume(); }
+	 * } }); scene.setOnDragDropped(new EventHandler<DragEvent>() {
+	 * 
+	 * @Override public void handle(DragEvent event) { dragDroppedList(event); }
+	 * });
+	 */
+}
