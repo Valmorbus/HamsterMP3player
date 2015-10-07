@@ -240,6 +240,7 @@ public class Mp3PlayerGUI extends Application {
 				stage.show();
 				
 				// work here
+				// perhaps a second class to work from
 				
 				if (playListPlace.isSelected()) {
 					playListPlace.setSelected(true);
