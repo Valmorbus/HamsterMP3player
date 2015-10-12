@@ -56,13 +56,13 @@ public class Mp3PlayerGUI extends Application {
 	// private String play = "Play";
 	private MediaPlayer mPlayer;
 	private MediaView mview;
-	private ListView<String> list = new ListView<String>();
+	static ListView<String> list = new ListView<String>();
 	private ArrayList<String> listOfSongs = mp3.readLib();
 	private File save = new File("Data/mediaLib.dat");
 	private String defaultFileString = "Data/big_buck_bunny.mp4";
 	private File mediaFile = new File(defaultFileString);
 	private BorderPane borderPane;
-	
+	private Stage secondStage;
 
 	/*
 	 * todo: https://gist.github.com/jewelsea/7821196
@@ -70,7 +70,8 @@ public class Mp3PlayerGUI extends Application {
 	 * kolla grafiken till denna
 	 * http://www.java2s.com/Code/Java/JavaFX/Draggablepanel.htm
 	 * 
-	 * make playlist choice
+	 * make playlist choice make puttons, make timer and metadata adjust
+	 * playlist so that it plays next song in list.
 	 */
 
 	public static void main(String[] args) {
@@ -80,11 +81,16 @@ public class Mp3PlayerGUI extends Application {
 	@Override
 	public void start(Stage primaryStage) {
 		Scene scene = setScene(primaryStage);
-		//primaryStage.initStyle(StageStyle.UNDECORATED);
+		// primaryStage.initStyle(StageStyle.UNDECORATED);
+
 		primaryStage.setTitle("Media Player!");
 		primaryStage.setScene(scene);
 		primaryStage.sizeToScene();
 		primaryStage.show();
+		PlayList pl = new PlayList();
+		secondStage = pl.start(secondStage);
+		secondStage.setOpacity(0.0);
+		secondStage.show();
 
 	}
 
@@ -230,42 +236,25 @@ public class Mp3PlayerGUI extends Application {
 		playListPlace.setSelected(false);
 		playListPlace.setOnAction(new EventHandler<ActionEvent>() {
 			public void handle(ActionEvent event) {
-				// playList.setSelected(true);
-				
-				Stage stage = new Stage(StageStyle.TRANSPARENT); 
-				BorderPane bp = new BorderPane();
-				Scene scene = new Scene(bp);
-				stage.setScene(scene);	
-				//stage.setOpacity(0.0);
-				stage.show();
-				
-				// work here
-				// perhaps a second class to work from
-				
+				// Stage stage = new Stage();
+				PlayList pl = new PlayList();;
 				if (playListPlace.isSelected()) {
 					playListPlace.setSelected(true);
 					borderPane.getChildren().remove(list);
 					borderPane.getCenter().autosize();
-				//	bp.setLeft(list);
-					stage.setTitle("Playlist");
-					stage.setOpacity(1.0);
-					stage.sizeToScene();
-					stage.setResizable(false);
-					stage.show();
 					
-					}
-				else {	
+					// this fixed it, needs renaming and explanation
+					secondStage.setScene(pl.scenefixtemp());
+					secondStage.setOpacity(1.0);
 					
+
+				} else {
 					playListPlace.setSelected(false);
 					borderPane.setRight(list);
-					//stage.setOpacity(0.0);
-					stage.close();
-					
+					secondStage.setOpacity(0.0);
 					
 
 				}
-				//boolean selected = (playListPlace.isSelected())?false:true;
-				//playListPlace.setSelected(selected);
 			}
 		});
 
