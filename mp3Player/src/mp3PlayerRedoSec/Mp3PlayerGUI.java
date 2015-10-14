@@ -89,7 +89,7 @@ public class Mp3PlayerGUI extends Application {
 		primaryStage.show();
 		PlayList pl = new PlayList();
 		secondStage = pl.start(secondStage);
-		secondStage.setOpacity(0.0);
+		secondStage.setOpacity(1.0);
 		secondStage.show();
 
 	}
@@ -214,7 +214,7 @@ public class Mp3PlayerGUI extends Application {
 		RadioMenuItem playList = new RadioMenuItem("Playlist", null);
 		playList.setMnemonicParsing(true);
 		playList.setAccelerator(new KeyCodeCombination(KeyCode.P, KeyCombination.CONTROL_DOWN));
-		playList.setSelected(true);
+		playList.setSelected(false);
 		playList.setOnAction(new EventHandler<ActionEvent>() {
 			public void handle(ActionEvent event) {
 				// playList.setSelected(true);
@@ -223,7 +223,7 @@ public class Mp3PlayerGUI extends Application {
 					borderPane.setRight(list);
 					borderPane.setCenter(mview);
 
-				} else {
+				} else if (!playList.isSelected()){
 					// list.setVisible(false);
 					borderPane.getChildren().remove(list);
 					borderPane.getCenter().autosize();
@@ -234,6 +234,7 @@ public class Mp3PlayerGUI extends Application {
 		RadioMenuItem playListPlace = new RadioMenuItem("Playlist Free", null);
 		playListPlace.setMnemonicParsing(true);
 		playListPlace.setSelected(false);
+		playList.setDisable(true);
 		playListPlace.setOnAction(new EventHandler<ActionEvent>() {
 			public void handle(ActionEvent event) {
 				// Stage stage = new Stage();
@@ -242,16 +243,19 @@ public class Mp3PlayerGUI extends Application {
 					playListPlace.setSelected(true);
 					borderPane.getChildren().remove(list);
 					borderPane.getCenter().autosize();
+					playList.setSelected(true);
 					
 					// this fixed it, needs renaming and explanation
 					secondStage.setScene(pl.scenefixtemp());
 					secondStage.setOpacity(1.0);
+					playList.setDisable(true);
 					
 
 				} else {
 					playListPlace.setSelected(false);
 					borderPane.setRight(list);
 					secondStage.setOpacity(0.0);
+					playList.setDisable(false);
 					
 
 				}
