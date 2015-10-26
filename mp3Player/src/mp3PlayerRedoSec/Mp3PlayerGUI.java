@@ -150,12 +150,17 @@ public class Mp3PlayerGUI extends Application {
 				}
 			}
 		});
-		list.setOnDragDropped(new EventHandler<DragEvent>() {
+		/*list.setOnDragDropped(new EventHandler<DragEvent>() {
 			@Override
 			public void handle(DragEvent event) {
 				dragDroppedList(event);
 			}
-		});
+		});*/
+		list.setOnDragDropped(event-> {
+			
+			dragDroppedList(event);
+		
+	});
 
 		MenuBar menuBar = menu(stage);
 		menuBar.prefWidthProperty().bind(borderPane.widthProperty());
