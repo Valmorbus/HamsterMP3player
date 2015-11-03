@@ -1,0 +1,20 @@
+
+.scene{
+	-fx-background-color: #333333;
+}
+.root{
+	-fx-background-color: #CCFF99;
+}
+HBox{
+	-fx-background-color: #CCFF99;
+}
+#play {
+	 -fx-graphic: url(file:///C:/Users/borgs_000/git/mp3Player/mp3Player/Data/play.jpg);  
+   
+}
+#stop{
+	
+}
+#list{
+	
+}
